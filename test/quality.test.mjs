@@ -279,3 +279,45 @@ test('chat with content on /: axe finds no serious or critical violations (dark 
     await live.close();
   }
 });
+
+test('JavaScript off at 320 and 390 px: the shell nav fits, no horizontal page scroll', async () => {
+  const lacking = [];
+  for (const width of [320, 390]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 800 }, javaScriptEnabled: false });
+    for (const p of SHELL) {
+      const page = await ctx.newPage();
+      await page.goto(server.url + p);
+      const { sw, iw } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: innerWidth }));
+      if (sw > iw) lacking.push(`${width} ${p} scrollWidth ${sw}`);
+      // every nav link and the Résumé pill stay reachable and keep a 44px target
+      for (const sel of ['.sh-links a', '.sh-res']) {
+        for (const box of await page.$$eval(sel, (els) => els.map((e) => { const r = e.getBoundingClientRect(); return { h: r.height, right: r.right, w: r.width }; }))) {
+          if (box.h < 43.5 || box.right > iw + 0.5 || box.w === 0) lacking.push(`${width} ${p} ${sel} ${JSON.stringify(box)}`);
+        }
+      }
+      await page.close();
+    }
+    await ctx.close();
+  }
+  assert.deepEqual(lacking, []);
+});
+
+// The résumé keeps the old shell and its light/dark chat panel: axe with the panel open in both themes.
+for (const theme of ['dark', 'light']) {
+  test(`chat panel open on /resume/: axe finds no serious or critical violations in ${theme} theme`, async () => {
+    const live = await serve(await build('development', { chatEndpoint: 'https://chat.test/ask' }));
+    try {
+      const ctx = await browser.newContext();
+      await ctx.addInitScript((t) => localStorage.setItem('ws-theme', t), theme);
+      const page = await ctx.newPage();
+      await page.goto(live.url + '/resume/');
+      assert.equal(await page.getAttribute('html', 'data-theme'), theme);
+      await page.click('[data-chat-launcher]');
+      assert.equal(await page.locator('[role=dialog]').isVisible(), true);
+      assert.deepEqual(await axeBad(page), []);
+      await ctx.close();
+    } finally {
+      await live.close();
+    }
+  });
+}

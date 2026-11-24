@@ -69,6 +69,10 @@ html.sh{scroll-behavior:smooth;scroll-padding-top:80px;-webkit-text-size-adjust:
   .js .sh-links.open{display:flex}
   .js .sh-links a{min-height:52px;border-bottom:1px solid rgba(35,44,58,.8)}
   .js .sh-menu-btn{display:inline-flex}
+  /* without script the links stay in the bar, so the bar wraps onto a second row instead of overflowing */
+  html:not(.js) .sh-nav{flex-wrap:wrap;height:auto;min-height:60px;row-gap:0;padding-block:8px}
+  html:not(.js) .sh-nav-r{flex-wrap:wrap;gap:0 8px;min-width:0}
+  html:not(.js) .sh-links{flex-wrap:wrap}
   .sh-links a{padding:0 8px;letter-spacing:.1em}
   .sh-res{padding:0 14px;letter-spacing:.08em}
   .sh-eyebrow{letter-spacing:.12em}

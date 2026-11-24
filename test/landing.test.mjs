@@ -124,17 +124,24 @@ test('#lp-data holds the landing data, starters and chat flag as JSON', async ()
   assert.ok(Array.isArray(json.starters));
 });
 
-test('data is escaped: HTML in titles renders as text and cannot close the JSON script', () => {
+test('data is escaped: HTML in titles renders as text and every "<" in the JSON script is escaped', () => {
   const nasty = '<b>x</b> & "y"';
+  const tricky = 'a <!-- b <script>c</script> d';
   const html = renderTemplate('partials/landing.njk', ctx({
     home: { ...home, hero: { ...home.hero, pre: nasty } },
-    landing: buildLandingData(home, [{ ...projects[0], title: nasty }]),
+    landing: buildLandingData(home, [{ ...projects[0], title: nasty }, { ...projects[1], title: tricky, summary: tricky }]),
   }));
   assert.match(html, /&lt;b&gt;x&lt;\/b&gt; &amp;/);
   assert.doesNotMatch(html, /<b>x<\/b>/);
+  assert.doesNotMatch(html, /<!-- b|<script>c/);
   const raw = html.match(/<script type="application\/json" id="lp-data">([\s\S]*?)<\/script>/)[1];
-  assert.doesNotMatch(raw, /<\//);
-  assert.equal(JSON.parse(raw).projects[0].title, nasty);
+  assert.doesNotMatch(raw, /</);
+  const lt = String.fromCharCode(92) + 'u003c'; // the six characters backslash-u-0-0-3-c
+  assert.ok(raw.includes(lt + '!--') && raw.includes(lt + 'script'), 'every < is written as its \\u escape');
+  const json = JSON.parse(raw);
+  assert.equal(json.projects[0].title, nasty);
+  assert.equal(json.projects[1].title, tricky);
+  assert.equal(json.projects[1].summary, tricky);
 });
 
 test('no figures: the results section is omitted entirely', () => {

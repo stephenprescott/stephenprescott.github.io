@@ -91,4 +91,4 @@
 </div></section>
 </div>
 
-<script type="application/json" id="lp-data">{{ { areas: landing.areas, figures: landing.figures, projects: landing.projects, starters: ((chat.starters or []) if chatEndpoint else []), hasChat: not not chatEndpoint } | dump | replace("</", "<\\/") | safe }}</script>
+<script type="application/json" id="lp-data">{{ { areas: landing.areas, figures: landing.figures, projects: landing.projects, starters: ((chat.starters or []) if chatEndpoint else []), hasChat: not not chatEndpoint } | dump | replace("<", "\\u003c") | safe }}</script>
