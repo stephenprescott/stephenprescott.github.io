@@ -75,10 +75,16 @@ html.lp-scene-on .lp-hero{margin-top:-60px;padding-top:0}
 .lp-scene-on .lp-arc .lp-proj-t i{margin-left:.35em}
 .lp-scene-on .lp-arc a.lp-proj:hover .lp-proj-e,.lp-scene-on .lp-arc a.lp-proj:focus-visible .lp-proj-e{opacity:1;transform:none}
 @media (hover:none){.lp-scene-on .lp-arc .lp-proj-e{opacity:1;transform:none}}
+/* a project with no eyebrow keeps its line empty, so its title sits as far under the drawing as in the mockup, where
+   every label has one */
+.lp-scene-on .lp-tag:not(:has(.lp-proj-e))::before{content:"";display:block;height:calc(12px * 1.6)}
 
 /* phones: the cards show the drawn constellation and the arrow */
 .lp-scene-on .lp-compact .lp-cst-card{display:block;width:min(124px,100%);height:auto;aspect-ratio:1;overflow:visible}
+/* as in the mockup's cards, the title follows its eyebrow with no gap */
+.lp-scene-on .lp-compact .lp-proj-t{margin-top:0}
 .lp-scene-on .lp-compact .lp-proj-t i{margin-left:.25em;opacity:1;transform:none}
+.lp-scene-on .lp-compact .lp-tag:not(:has(.lp-proj-e))::before{margin-top:10px}
 
 /* when the hero shows fewer projects than there are, a quiet pointer to the full list, just under the projects */
 .lp-more-note{position:relative;z-index:3;height:44px;margin:8px 0 0;text-align:center}
@@ -118,6 +124,9 @@ html.lp-chat-yield .ws-chat .ws-chat-launcher{opacity:0;visibility:hidden;transi
 
 /* ---------- lower half: one editorial grid per section ---------- */
 .lp-wrap{width:min(1200px,calc(100% - 2 * var(--gutter)));margin-inline:auto}
+/* the mockup's lower-half gutter (sections and footer): 72px, 48px up to 1180px wide, 20px on phones */
+@media (min-width:1181px){.sh-root{--gutter:72px}}
+@media (max-width:760px){.sh-root{--gutter:20px}}
 .lp-sec{padding:128px 0 0}
 /* the first section sits close under the hero's projects: about 96px below the lowest label on the arc, 64px below the
    phone cards (the arc stage itself ends a little under its lowest label) */
@@ -330,7 +339,8 @@ button.lp-pr:hover .arr,button.lp-pr:focus-visible .arr{color:var(--accent);tran
 .lp-proves-row .pv-k{margin-right:10px;font:500 12px/1.6 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--tert)}
 .lp-chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:0;border-radius:999px;background:rgba(154,167,187,.08);color:var(--ink);font:400 14px var(--sans);text-align:left;cursor:pointer;transition:background-color .25s,color .25s}
 .lp-chip:hover{background:rgba(255,138,92,.14);color:#fff}
-#work .lp-more{margin-top:10px}
+/* the mockup's list foot: 10px under the list, then the "Show all" button when there is one */
+#work ol.lp-acc{margin-bottom:10px}
 .lp-xacc .lp-acc-c{padding-left:0}
 .lp-xacc .lp-trig{grid-template-columns:28px minmax(0,1fr) 40px;gap:12px;min-height:68px}
 
@@ -344,12 +354,13 @@ button.lp-pr:hover .arr,button.lp-pr:focus-visible .arr{color:var(--accent);tran
 #contact .ws-field label{display:block;margin-bottom:6px;font:500 12px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--tert)}
 #contact .ws-req{color:var(--accent)}
 #contact .ws-input{display:block;width:100%;min-height:44px;padding:10px 0;border:0;border-bottom:1px solid rgba(154,167,187,.3);border-radius:0;background:transparent;color:var(--ink);font:400 17px/1.5 var(--sans);transition:border-color .25s,box-shadow .25s}
-#contact textarea.ws-input{min-height:112px;resize:vertical}
+/* four rows, as in the mockup (the shared form macro asks for five) */
+#contact textarea.ws-input{height:calc(4 * 1.5em + 21px);min-height:112px;resize:vertical}
 #contact .ws-input:focus{border-bottom-color:var(--cyan);box-shadow:0 1px 0 var(--cyan)}
-#contact .ws-btn{justify-self:start;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:0 24px;border:0;border-radius:999px;background:var(--accent);color:#0d1117;font:500 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background-color .25s}
+#contact .ws-btn{justify-self:end;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:0 24px;border:0;border-radius:999px;background:var(--accent);color:#0d1117;font:500 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background-color .25s}
 #contact .ws-btn:hover{background:#ffa27e}
 #contact .ws-btn[disabled]{background:rgba(154,167,187,.1);color:var(--muted);cursor:not-allowed}
-#contact .ws-icon{width:16px;height:16px}
+#contact .ws-btn .ws-icon{display:none}
 #contact .ws-hint{margin:0;font-size:16px;color:var(--muted)}
 #contact .ws-link{color:var(--ink);text-decoration-color:rgba(255,138,92,.6);text-underline-offset:3px}
 
