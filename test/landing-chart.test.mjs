@@ -251,9 +251,59 @@ test('390×844: no chart; one accordion per area listing its proof; no horizonta
     assert.deepEqual(await ai.locator('.lp-pr > span:first-of-type').allTextContents(), ['Data Central', 'Kyber Praxis', 'Praxis Fasti', 'Jobscan Board']);
     assert.equal(await page.locator('#expertise .lp-xacc .lp-trig[aria-expanded="true"]').count(), 1);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth));
+    // hints as in the mockup: nothing lights up on phones, so the expertise hint goes; the other two stay
+    assert.equal(await page.locator('#expertise .lp-hint').isVisible(), false);
+    assert.equal(await page.locator('#results .lp-hint').isVisible(), true);
+    assert.equal(await page.locator('#work .lp-hint').isVisible(), true);
     // a figure opens its area's accordion
     await page.click('#results [data-fig="models"]');
     assert.equal(await page.getAttribute('#lp-x-data-strategy .lp-trig', 'aria-expanded'), 'true');
+  });
+});
+
+test('700px wide is still a phone layout (breakpoint 760px): accordions, no chart', async () => {
+  await withPage({ viewport: { width: 700, height: 900 } }, async (page) => {
+    assert.equal(await page.locator('svg.lp-chart').count(), 0);
+    assert.equal(await page.locator('#expertise .lp-xacc > li').count(), 6);
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth));
+  });
+  await withPage({ viewport: { width: 761, height: 900 } }, async (page) => {
+    assert.equal(await page.locator('svg.lp-chart').count(), 1);
+  });
+});
+
+test('LandingChart.select(areaId) and .open(itemId) drive the chart (1440) and the accordions (390)', async () => {
+  await withPage({ reducedMotion: 'reduce' }, async (page) => {
+    await page.evaluate(() => window.LandingChart.select('governance-and-compliance'));
+    assert.equal(await selected(page), 'governance-and-compliance');
+    assert.equal(await page.getAttribute('.lp-node[data-area="governance-and-compliance"]', 'aria-pressed'), 'true');
+    assert.deepEqual(await panelNames(page), ['Data Central']);
+    await page.evaluate(() => window.LandingChart.open('kyber-praxis'));
+    assert.equal(await opened(page), 'kyber-praxis');
+    assert.equal(await selected(page), 'ai-tools-and-platforms');
+    assert.equal(await page.locator('.lp-dot.on').getAttribute('data-id'), 'kyber-praxis');
+    await page.evaluate(() => { window.LandingChart.select('nope'); window.LandingChart.open('nope'); });
+    assert.equal(await opened(page), 'kyber-praxis', 'unknown ids are ignored');
+  });
+  await withPage({ reducedMotion: 'reduce', viewport: { width: 390, height: 844 } }, async (page) => {
+    await page.evaluate(() => window.LandingChart.select('data-strategy'));
+    assert.equal(await page.getAttribute('#lp-x-data-strategy .lp-trig', 'aria-expanded'), 'true');
+    await page.evaluate(() => window.LandingChart.open('audited'));
+    assert.equal(await page.getAttribute('#lp-x-data-as-competitive-advantage .lp-trig', 'aria-expanded'), 'true');
+    assert.equal(await page.locator('#expertise .lp-xacc .lp-trig[aria-expanded="true"]').count(), 1);
+  });
+});
+
+test('fixture data, a slug with quotes and "<" (server lists do not match): ids are escaped and the accordion still works', async () => {
+  const odd = 'x" data-injected="1<b>';
+  const withOdd = (d) => ({ ...d, projects: d.projects.map((p, i) => (i === 0 ? { ...p, slug: odd } : p)) });
+  await withPage({ setup: withData(withOdd) }, async (page) => {
+    assert.equal(await page.locator('[data-injected]').count(), 0);
+    const trig = page.locator('#work .lp-trig').first();
+    assert.equal(await trig.getAttribute('aria-controls'), `lp-w-${odd}-p`);
+    await trig.click();
+    assert.ok(await page.evaluate((id) => !!document.getElementById(id) && document.getElementById(id).closest('.lp-item').classList.contains('open'), `lp-w-${odd}-p`));
+    assert.equal(await page.$$eval('.lp-dot', (ds, v) => ds.filter((d) => d.dataset.id === v).length, odd), 1);
   });
 });
 
@@ -286,6 +336,51 @@ test('bad #lp-data leaves the server-rendered lists in place', async () => {
       assert.equal(await page.locator('svg.lp-chart, .lp-panel, .lp-trig').count(), 0, bad);
     });
   }
+});
+
+// A late init step throws: wiring the handlers (document pointermove listener), or the very last step,
+// listening to the phone breakpoint. The page must keep its fallback lists, working plain links and one logged error.
+const lateFailures = {
+  'wiring the handlers': () => {
+    const add = Document.prototype.addEventListener;
+    Document.prototype.addEventListener = function (type, fn, opts) {
+      if (type === 'pointermove' && opts === true) throw new Error('test: wire fails');
+      return add.call(this, type, fn, opts);
+    };
+  },
+  'listening to the breakpoint': () => {
+    MediaQueryList.prototype.addEventListener = function () { throw new Error('test: matchMedia listener fails'); };
+  },
+};
+for (const [step, stub] of Object.entries(lateFailures)) {
+  test(`a failure while ${step} leaves the fallback intact and usable, logs one error, builds nothing`, async () => {
+    const errors = [];
+    await withPage({ ready: false, setup: async (page) => {
+      page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+      page.on('pageerror', (e) => errors.push(e.message));
+      await page.addInitScript(stub);
+    } }, async (page) => {
+      await page.waitForLoadState('load');
+      assert.deepEqual(errors.length, 1, errors.join(' | '));
+      assert.match(errors[0], /test: /);
+      assert.equal(await page.evaluate(() => typeof window.LandingChart), 'undefined');
+      assert.equal(await page.locator('#expertise ul.lp-areas > li').count(), 6);
+      assert.equal(await page.locator('#work ol.lp-work > li.lp-row').count(), landing.projects.length);
+      assert.equal(await page.locator('svg.lp-chart, .lp-starchart, .lp-panel, .lp-trig, .lp-go, .lp-sc, #expertise[data-selected]').count(), 0);
+      // the figures stay plain links to #expertise, and the fallback proof links are there
+      await page.click('#results [data-fig="audited"]');
+      assert.equal(await page.evaluate(() => location.hash), '#expertise');
+      assert.equal(await page.getAttribute('#expertise ul.lp-areas a.lp-pr >> nth=0', 'href'), '/projects/data-central/');
+    });
+  });
+}
+
+test('without MediaQueryList.addEventListener (Safari before 14) the chart builds and still follows the breakpoint', async () => {
+  await withPage({ setup: (page) => page.addInitScript(() => { MediaQueryList.prototype.addEventListener = undefined; }) }, async (page) => {
+    assert.equal(await page.locator('svg.lp-chart').count(), 1);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForFunction(() => !document.querySelector('svg.lp-chart') && document.querySelector('.lp-xacc'));
+  });
 });
 
 test('axe: no serious or critical violations with the chart built (1440) and the accordions built (390)', async () => {

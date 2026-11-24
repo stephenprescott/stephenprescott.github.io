@@ -1,7 +1,7 @@
 /* The landing page's star chart, proof panel and work accordion. Ported from the approved mockup
    (round-11/full-page.html). Reads #lp-data ({ areas, figures, projects }) and enhances the
-   server-rendered lists in #expertise and #work; each view is built detached and swapped in only once it
-   is complete, so on any error the no-JavaScript lists stay. Exposes window.LandingChart = { select, open }. */
+   server-rendered lists in #expertise and #work. Everything that can fail runs on detached nodes before the
+   page changes, so on any error (logged) the no-JavaScript lists stay. Exposes window.LandingChart = { select, open }. */
 (function () {
   'use strict';
   var dataEl = document.getElementById('lp-data');
@@ -36,7 +36,7 @@
       return { id: String(f.id), kind: 'fig', t: f.value + f.suffix + ' ' + f.label, n: f.value, suf: f.suffix, label: f.label, body: f.body, href: '/resume/', areas: idx(f.proves) };
     }));
     ITEMS.forEach(function (it) { BYID[it.id] = it; });
-  } catch (e) { return; }
+  } catch (e) { console.error(e); return; }
   var PROJECTS = ITEMS.filter(function (it) { return it.kind === 'case'; });
 
   function itemsFor(a) { return ITEMS.filter(function (it) { return it.areas.indexOf(a) > -1; }); }
@@ -86,7 +86,7 @@
   var V = {};
 
   function setState() {
-    if (!AREAS.length) return;
+    if (!live) return;
     expertise.setAttribute('data-selected', AREAS[curArea].id);
     if (curItem) expertise.setAttribute('data-open', curItem); else expertise.removeAttribute('data-open');
   }
@@ -215,7 +215,8 @@
   }
 
   /* ============ accordion rows (the work list, and the areas on phones) ============ */
-  function accItem(id, head, body, attrs) {
+  function accItem(rawId, head, body, attrs) {
+    var id = esc(rawId);
     return '<li class="lp-item" id="' + id + '"' + (attrs || '') + '><h3 class="lp-item-h"><button class="lp-trig" type="button" id="' + id + '-b" aria-expanded="false" aria-controls="' + id + '-p">' + head +
       '<span class="lp-ico" aria-hidden="true"></span></button></h3><div class="lp-acc-body" id="' + id + '-p" role="region" aria-labelledby="' + id + '-b"><div class="lp-acc-in"><div class="lp-acc-c">' + body + '</div></div></div></li>';
   }
@@ -319,14 +320,16 @@
     else bring(expertise);
   }
 
-  /* ============ build: swap the fallback for the current view ============ */
-  function render() {
-    var head = $('.lp-mod-h', expertise), body = $('.lp-mod-b', expertise), mod = $('.lp-mod', expertise);
-    var view = phoneMQ.matches ? buildPhone() : buildDesktop();
-    var prev = V;
+  /* ============ build the current view detached and paint it; mount() then swaps it in ============ */
+  function build() {
+    var view = phoneMQ.matches ? buildPhone() : buildDesktop(), prev = V;
     V = view;
     try { paint(); } catch (e) { V = prev; throw e; }
-    if (prev.panel) prev.panel.remove();
+    return view;
+  }
+  function mount(view) {
+    var head = $('.lp-mod-h', expertise), body = $('.lp-mod-b', expertise), mod = $('.lp-mod', expertise);
+    $$('.lp-panel', expertise).forEach(function (p) { p.remove(); });
     body.textContent = '';
     if (view.xacc) { mod.classList.remove('lp-sc'); body.appendChild(view.xacc); }
     else {
@@ -334,14 +337,20 @@
       head.after(view.panel);
       while (view.main.firstChild) body.appendChild(view.main.firstChild);
     }
+    setState();
   }
+
+  /* every handler stays inert until the page has been enhanced (live), so a failed init leaves the
+     server-rendered lists and the figures' plain links working */
+  var live = false;
+  function on(target, type, fn, capture) { target.addEventListener(type, function (e) { if (live) fn(e); }, !!capture); }
 
   function wire() {
     var hoverT, hoverNode = null, prevPt = null, curPt = null;
     /* hover selects an area only after a real mouse movement over it: scrolling a node under a resting
        pointer fires boundary events (and may fire a pointermove at the same spot), never a change here */
-    document.addEventListener('pointermove', function (e) { prevPt = curPt; curPt = { x: e.clientX, y: e.clientY }; }, true);
-    expertise.addEventListener('pointermove', function (e) {
+    on(document, 'pointermove', function (e) { prevPt = curPt; curPt = { x: e.clientX, y: e.clientY }; }, true);
+    on(expertise, 'pointermove', function (e) {
       if (e.pointerType !== 'mouse' || !V.nodes) return;
       if (prevPt && prevPt.x === e.clientX && prevPt.y === e.clientY) return;
       var b = e.target.closest('.lp-node');
@@ -351,27 +360,27 @@
     });
     /* a panel row marks its star while hovered or focused */
     function rowMark(e, on) { var r = e.target.closest('.lp-panel .lp-pr[data-id]'), d = r && dotOf(r.dataset.id); if (d) d.classList.toggle('hov', on); }
-    expertise.addEventListener('pointerout', function (e) {
+    on(expertise, 'pointerout', function (e) {
       var b = e.target.closest('.lp-node'); if (b && !b.contains(e.relatedTarget)) { hoverNode = null; clearTimeout(hoverT); }
       if (e.target.closest('.lp-dot')) unpeek();
       rowMark(e, false);
     });
-    expertise.addEventListener('pointerover', function (e) {
+    on(expertise, 'pointerover', function (e) {
       var d = e.target.closest('.lp-dot'); if (d && e.pointerType !== 'touch') peek(d);
       rowMark(e, true);
     });
-    expertise.addEventListener('focusin', function (e) {
+    on(expertise, 'focusin', function (e) {
       var b = e.target.closest('.lp-node');
       if (b && b.matches(':focus-visible')) selectArea(AREAS.findIndex(function (a) { return a.id === b.dataset.area; }));
       var d = e.target.closest('.lp-dot');
       if (d) { $$('.lp-dot', V.dots).forEach(function (x) { x.tabIndex = x === d ? 0 : -1; }); peek(d); }
       rowMark(e, true);
     });
-    expertise.addEventListener('focusout', function (e) {
+    on(expertise, 'focusout', function (e) {
       if (e.target.closest('.lp-dot')) unpeek();
       rowMark(e, false);
     });
-    expertise.addEventListener('click', function (e) {
+    on(expertise, 'click', function (e) {
       var t = e.target, b;
       if ((b = t.closest('.lp-node'))) { clearTimeout(hoverT); selectArea(AREAS.findIndex(function (a) { return a.id === b.dataset.area; })); return; }
       if ((b = t.closest('.lp-dot'))) { openItem(b.dataset.id); unpeek(); return; }
@@ -383,7 +392,7 @@
       if (b.dataset.toArea) { selectArea(+b.dataset.toArea); var p = $('.lp-pr', V.panel); if (p) p.focus(); return; }
       if (b.dataset.id) { openItem(b.dataset.id); var bk = $('[data-back]', V.panel); if (bk) bk.focus(); }
     });
-    expertise.addEventListener('keydown', function (e) {
+    on(expertise, 'keydown', function (e) {
       var t = e.target, b;
       if ((b = t.closest('.lp-node'))) {
         var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return;
@@ -404,32 +413,39 @@
       } else if (V.xacc) accKeys(V.xacc, e);
     });
 
-    work.addEventListener('click', function (e) {
+    on(work, 'click', function (e) {
       var b;
       if ((b = e.target.closest('.lp-trig'))) { toggle(b.closest('.lp-item')); return; }
       if ((b = e.target.closest('.lp-chip'))) { goArea(+b.dataset.toArea); return; }
       if ((b = e.target.closest('.lp-more'))) showAll($('ol.lp-work', work), b);
     });
-    work.addEventListener('keydown', function (e) { var l = $('ol.lp-work', work); if (l) accKeys(l, e); });
+    on(work, 'keydown', function (e) { var l = $('ol.lp-work', work); if (l) accKeys(l, e); });
 
     /* a figure finds its star */
+    $$('#results [data-fig]').forEach(function (s) {
+      on(s, 'click', function (e) { if (BYID[s.dataset.fig]) { e.preventDefault(); findItem(s.dataset.fig); } });
+    });
+
+    /* crossing the phone breakpoint rebuilds the other view (addListener: Safari before 14) */
+    var onMQ = function () { if (!live) return; try { mount(build()); } catch (e) { console.error(e); } };
+    if (phoneMQ.addEventListener) phoneMQ.addEventListener('change', onMQ); else phoneMQ.addListener(onMQ);
+  }
+
+  /* Everything that can fail runs first, on detached nodes; the page itself changes only at the end */
+  try {
+    if (!expertise || !work || !AREAS.length) return;
+    var list = buildWork(), view = build();
+    wire();
+    mount(view);
+    $('ol.lp-work', work).replaceWith(list);
     $$('#results [data-fig]').forEach(function (s) {
       var go = document.createElement('span');
       go.className = 'lp-go'; go.setAttribute('aria-hidden', 'true'); go.innerHTML = ARROW;
       s.appendChild(go);
-      s.addEventListener('click', function (e) { if (BYID[s.dataset.fig]) { e.preventDefault(); findItem(s.dataset.fig); } });
     });
-
-    phoneMQ.addEventListener('change', function () { try { render(); } catch (e) { /* keep the current view */ } });
-  }
-
-  try {
-    if (!expertise || !work || !AREAS.length) return;
-    var list = buildWork();
-    render();
-    $('ol.lp-work', work).replaceWith(list);
-    wire();
-  } catch (e) { return; }
+    live = true;
+    setState();
+  } catch (e) { console.error(e); return; }
 
   window.LandingChart = {
     select: function (areaId) { var i = AREAS.findIndex(function (a) { return a.id === areaId; }); if (i > -1) goArea(i); },

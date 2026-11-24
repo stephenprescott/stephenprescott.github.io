@@ -329,6 +329,8 @@ button.lp-pr:hover .arr,button.lp-pr:focus-visible .arr{color:var(--accent);tran
   .lp-acc-c .lp-sum{font-size:17px}
   .lp-psr{grid-template-columns:minmax(0,1fr);gap:4px}
   .lp-psr dd{margin-bottom:12px}
+  /* no chart on phones, so nothing to light up */
+  #expertise .lp-hint{display:none}
 }
 @media (max-width:639px){
   .lp-projects{grid-template-columns:repeat(2,minmax(0,1fr))}
