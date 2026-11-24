@@ -19,11 +19,12 @@ html.sh{scroll-behavior:smooth;scroll-padding-top:80px;-webkit-text-size-adjust:
 @media (prefers-reduced-motion:reduce){html.sh{scroll-behavior:auto}}
 .sh-root{margin:0;background:var(--ground);color:var(--ink);font:400 17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .sh-root::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(110% 70% at 50% 0%,#121925 0%,#0d1117 48%,#080b10 100%)}
-.sh-root a{color:inherit}
-.sh-root button{font-family:inherit}
-.sh-root [hidden]{display:none!important}
-.sh-root ::selection{background:rgba(255,138,92,.35);color:#fff}
-.sh-root :focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
+:where(.sh-root) a{color:inherit}
+:where(.sh-root) button{font-family:inherit}
+/* :where() keeps these base rules at low specificity so component rules (pills, skip link) win */
+:where(.sh-root) [hidden]{display:none!important}
+:where(.sh-root) ::selection{background:rgba(255,138,92,.35);color:#fff}
+:where(.sh-root) :focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
 .sh-skip{position:absolute;left:16px;top:-60px;z-index:100;background:var(--accent);color:#0d1117;padding:12px 16px;font:500 14px var(--sans);text-decoration:none;border-radius:999px}
 .sh-skip:focus{top:12px}
 

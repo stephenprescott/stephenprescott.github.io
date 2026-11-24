@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import * as cheerio from 'cheerio';
+import { chromium } from 'playwright';
 import { build } from './helpers/build.mjs';
 import { renderMacro, renderTemplate } from './helpers/render.mjs';
 
@@ -71,4 +72,28 @@ test('built site ships shell.css, Space Grotesk files and licence; shell.css is 
   const css = readFileSync(join(dir, 'assets/css/shell.css'), 'utf8');
   assert.match(css, /Space Grotesk/);
   for (const bad of ['Gelasio', 'font-style:italic', 'background-clip:text']) assert.ok(!css.includes(bad), bad);
+});
+
+test('focus styles: skip link keeps dark text, pills and circles keep their radius', async () => {
+  const html = renderTemplate('layouts/shell.njk', { site, chat, title: 'T', content: '<a class="sh-btn" href="#x">Go</a>', page: { url: '/x/' } });
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage({ viewport: { width: 1200, height: 800 } });
+    await page.setContent(html);
+    await page.addStyleTag({ path: join(root, 'src/assets/css/shell.css') });
+    const style = (sel) => page.$eval(sel, (el) => { const c = getComputedStyle(el); return { color: c.color, radius: c.borderTopLeftRadius }; });
+    await page.keyboard.press('Tab');
+    assert.ok(await page.$eval('.sh-skip', (el) => el === document.activeElement));
+    assert.equal((await style('.sh-skip')).color, 'rgb(13, 17, 23)');
+    assert.ok(parseFloat((await style('.sh-skip')).radius) >= 999);
+    for (const sel of ['.sh-res', '.sh-btn']) {
+      await page.focus(sel);
+      assert.ok(parseFloat((await style(sel)).radius) >= 999, `${sel} radius`);
+    }
+    await page.$eval('.sh-menu-btn', (el) => { el.hidden = false; el.style.display = 'inline-flex'; });
+    await page.focus('.sh-menu-btn');
+    assert.equal((await style('.sh-menu-btn')).radius, '50%');
+  } finally {
+    await browser.close();
+  }
 });
