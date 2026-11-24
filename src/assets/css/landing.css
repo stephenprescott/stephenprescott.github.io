@@ -85,6 +85,12 @@ html.lp-scene-on .lp-hero{margin-top:-60px;padding-top:0}
 .lp-more-below{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:999px;font:500 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--tert);transition:color .25s}
 .lp-more-below:hover,.lp-more-below:focus-visible{color:var(--ink)}
 
+/* the chat launcher (chat-shell.css) steps aside while it would sit on a hero project: hero-scene.js sets
+   html.lp-chat-yield. It fades, then turns visibility:hidden, so it is out of the tab order and cannot be clicked; under
+   reduced motion chat.css drops the fade. */
+html.lp-scene-on .ws-chat .ws-chat-launcher{transition:opacity .25s,visibility 0s,background-color .25s,color .25s}
+html.lp-chat-yield .ws-chat .ws-chat-launcher{opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+
 /* constellations: drawn in, line by line, when they come into view */
 .lp-cst{transition:opacity .5s ease}
 .lp-seg{fill:none;stroke:rgba(216,222,233,.62);stroke-width:.85;stroke-linecap:butt}

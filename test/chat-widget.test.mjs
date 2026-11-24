@@ -36,8 +36,10 @@ async function fakeWorker(page, handler = () => ({ status: 200, json: OK })) {
   return bodies;
 }
 
+// 1440×900 unless a test sets its own viewport: on / the launcher steps aside while it would sit on a hero project,
+// and at this size it does not, so tests about the chat itself can use it.
 async function open(opts = {}) {
-  const ctx = await browser.newContext(opts);
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, ...opts });
   const page = await ctx.newPage();
   return { ctx, page };
 }
@@ -283,7 +285,7 @@ for (const vp of [{ width: 1280, height: 800 }, { width: 320, height: 640 }]) {
     await page.waitForSelector('button[data-chat-open]', { state: 'visible' });
     assert.equal(await lineCount(page, 'button[data-chat-open]'), 1, 'hero Ask');
     assert.equal(await lineCount(page, '[data-chat-launcher]'), 1, 'launcher');
-    await page.click('[data-chat-launcher]');
+    await page.click('button[data-chat-open]'); // the launcher may be stepping aside for the hero projects here
     for (const sel of ['[data-chat-send]', '[data-chat-close]']) {
       assert.equal(await lineCount(page, sel), 1, sel);
       const { h, lh } = await page.$eval(sel, (el) => {
@@ -435,14 +437,49 @@ for (const path of ['/', '/projects/']) test(`shell chat restyle on ${path}: Spa
   await ctx.close();
 });
 
-for (const vp of [{ width: 1440, height: 900 }, { width: 1280, height: 800 }, { width: 390, height: 844 }]) {
-  test(`${vp.width}px: the launcher pill covers no hero text on load and no footer text at the bottom of the page`, async () => {
+// The launcher yields to the hero's projects: on / it hides (out of the tab order) while it would sit on a project
+// item or the "+N more below" line, and comes back once nothing is under it. The hero's "Ask my AI" is the entry meanwhile.
+const LAUNCHER_SIZES = [
+  { width: 1440, height: 900 }, { width: 1280, height: 800 }, { width: 1280, height: 780 }, { width: 1280, height: 760 },
+  { width: 1280, height: 740 }, { width: 1024, height: 768 }, { width: 390, height: 844 },
+];
+// rAF twice, then let the fade finish
+const settle = (page) => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 400)))));
+const launcherShown = (page) => page.$eval('[data-chat-launcher]', (l) => !l.hidden && getComputedStyle(l).visibility !== 'hidden');
+// visible hero project items (box, glyph, label) and the "+N more below" line that the launcher overlaps
+const launcherHits = (page) => page.evaluate(() => {
+  const l = document.querySelector('[data-chat-launcher]').getBoundingClientRect();
+  const items = [...document.querySelectorAll('.lp-projects > li:not(.lp-off), .lp-projects > li:not(.lp-off) .lp-proj-t, .lp-projects > li:not(.lp-off) .lp-proj-e, a.lp-more-below')];
+  return items.filter((e) => [...e.getClientRects()].some((b) => b.width && Math.min(b.right, l.right) > Math.max(b.left, l.left) && Math.min(b.bottom, l.bottom) > Math.max(b.top, l.top)))
+    .map((e) => (e.closest('li') ? e.closest('li').dataset.slug : 'more') + ' ' + e.className);
+});
+const loadLanding = async (page) => {
+  await page.goto(live.url + '/');
+  await page.waitForFunction(() => document.documentElement.classList.contains('lp-scene-on'), null, { timeout: 30000 });
+  await page.waitForSelector('[data-chat-launcher]', { state: 'attached' });
+  await page.waitForFunction(() => !document.querySelector('[data-chat-launcher]').hidden);
+  await settle(page);
+};
+
+for (const vp of LAUNCHER_SIZES) {
+  test(`${vp.width}×${vp.height}: the launcher never sits on a hero project while shown, covers no hero or footer text`, async () => {
     const { ctx, page } = await open({ viewport: vp });
-    await page.goto(live.url + '/');
-    await page.waitForFunction(() => document.documentElement.classList.contains('lp-scene-on'), null, { timeout: 30000 });
-    await page.waitForSelector('[data-chat-launcher]', { state: 'visible' });
+    await loadLanding(page);
+    const heroEnd = await page.evaluate(() => { const h = document.getElementById('top'); return h.offsetTop + h.offsetHeight; });
+    const bad = [];
+    for (let y = 0; y <= heroEnd + 60; y += 60) {
+      await page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), y);
+      await settle(page);
+      if (await launcherShown(page)) for (const h of await launcherHits(page)) bad.push(`scroll ${y}: ${h}`);
+    }
+    assert.deepEqual(bad, []);
+    // and no hero or footer text under it while it shows
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    await settle(page);
     const covered = (sel) => page.evaluate((s) => {
-      const l = document.querySelector('[data-chat-launcher]').getBoundingClientRect();
+      const el = document.querySelector('[data-chat-launcher]');
+      if (getComputedStyle(el).visibility === 'hidden') return [];
+      const l = el.getBoundingClientRect();
       const out = [];
       for (const e of document.querySelectorAll(s)) {
         const w = document.createTreeWalker(e, NodeFilter.SHOW_TEXT);
@@ -458,12 +495,51 @@ for (const vp of [{ width: 1440, height: 900 }, { width: 1280, height: 800 }, { 
       return out;
     }, sel);
     assert.deepEqual(await covered('.lp-text, .lp-projects > li:not(.lp-off), .lp-more-note'), [], 'hero');
-    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-    await page.waitForTimeout(100);
+    await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
+    await settle(page);
+    assert.equal(await launcherShown(page), true, 'shown at the bottom of the page');
     assert.deepEqual(await covered('.sh-foot'), [], 'footer');
     await ctx.close();
   });
 }
+
+for (const vp of [{ width: 1280, height: 740 }, { width: 1280, height: 760 }, { width: 1280, height: 780 }, { width: 1024, height: 768 }]) {
+  test(`${vp.width}×${vp.height}: the launcher is hidden on load (Ask my AI still opens the chat) and returns past the hero`, async () => {
+    const { ctx, page } = await open({ viewport: vp });
+    await loadLanding(page);
+    assert.equal(await launcherShown(page), false, 'hidden on load');
+    assert.equal(await page.locator('[data-chat-launcher]').isVisible(), false);
+    // out of the tab order: it cannot take focus while hidden
+    assert.equal(await page.$eval('[data-chat-launcher]', (l) => { l.focus(); return document.activeElement === l; }), false, 'not focusable');
+    await page.click('button[data-chat-open]');
+    assert.equal(await page.locator('#ws-chat-panel').isVisible(), true);
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('#ws-chat-panel').isVisible(), false);
+    await page.evaluate(() => { const h = document.getElementById('top'); window.scrollTo({ top: h.offsetTop + h.offsetHeight, behavior: 'instant' }); });
+    await settle(page);
+    assert.equal(await launcherShown(page), true, 'back after scrolling past the hero');
+    await page.click('[data-chat-launcher]');
+    assert.equal(await page.locator('#ws-chat-panel').isVisible(), true);
+    await ctx.close();
+  });
+}
+
+test('1440×900: the launcher shows on load', async () => {
+  const { ctx, page } = await open({ viewport: { width: 1440, height: 900 } });
+  await loadLanding(page);
+  assert.equal(await launcherShown(page), true);
+  assert.equal(await page.locator('[data-chat-launcher]').isVisible(), true);
+  await ctx.close();
+});
+
+test('reduced motion: the launcher yields without a fade', async () => {
+  const { ctx, page } = await open({ viewport: { width: 1280, height: 760 }, reducedMotion: 'reduce' });
+  await loadLanding(page);
+  const s = await page.$eval('[data-chat-launcher]', (l) => ({ v: getComputedStyle(l).visibility, t: getComputedStyle(l).transitionDuration }));
+  assert.equal(s.v, 'hidden');
+  assert.match(s.t, /^0s(, 0s)*$/);
+  await ctx.close();
+});
 
 // /resume/ keeps its own chat panel: values captured before the shell restyle (Task 7).
 for (const [theme, bg] of [['light', 'rgb(216, 222, 233)'], ['dark', 'rgb(13, 17, 23)']]) {

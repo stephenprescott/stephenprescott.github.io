@@ -298,10 +298,15 @@ const bgPixels = (page) => page.evaluate(() => {
   const c = document.querySelector('canvas.lp-bg');
   return Array.from(c.getContext('2d').getImageData(0, 0, c.width, c.height).data).join(',');
 });
+// scroll to the contact section and wait until the page has stopped moving (html.sh scrolls smoothly), so the
+// starfield's parallax cannot be what changes the pixels
 const offHero = async (page) => {
   await page.evaluate(() => document.getElementById('contact').scrollIntoView());
   await page.waitForFunction(() => !window.HeroScene.state().running, null, { timeout: 5000 });
-  await page.waitForTimeout(300);
+  await page.waitForFunction(() => new Promise((r) => {
+    const y = window.scrollY;
+    setTimeout(() => requestAnimationFrame(() => r(y > 0 && window.scrollY === y)), 150);
+  }), null, { timeout: 10000 });
 };
 
 test('below the hero the starfield keeps twinkling while the hero loop is paused', async () => {
@@ -353,8 +358,10 @@ test('12 projects: the hero projects and "+N more below" stay clear of the Resul
   for (const viewport of [DESK, PHONE]) {
     await withPage({ setup: withExtra(7), viewport }, async (page) => {
       await page.waitForTimeout(300);
+      // measured: 72px under "+N more below" at 1440, 64px under the phone cards (all 12 shown) at 390
+      const want = viewport.width === DESK.width ? 72 : 64;
       const gap = await heroGap(page);
-      assert.ok(gap >= 24, `${viewport.width}: gap ${gap}`);
+      assert.ok(Math.abs(gap - want) <= 8, `${viewport.width}: gap ${gap}, want ${want} ± 8`);
     });
   }
 });

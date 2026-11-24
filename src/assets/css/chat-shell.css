@@ -6,11 +6,11 @@
 /* buttons: borderless pills (Close, starters), the accent pill for Send and the launcher */
 .sh-root .ws-chat .ws-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border:0;border-radius:999px;background:rgba(216,222,233,.07);color:var(--ink);font:500 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background-color .25s,color .25s}
 .sh-root .ws-chat .ws-btn:hover{background:rgba(255,138,92,.14);color:var(--accent)}
-.sh-root .ws-chat .ws-btn-primary,.sh-root .ws-chat .ws-btn-primary:hover{background:var(--accent);color:#0d1117}
-.sh-root .ws-chat .ws-btn-primary:hover{background:#ffa27e}
+.sh-root .ws-chat .ws-btn-primary{background:var(--accent);color:var(--ground)}
+.sh-root .ws-chat .ws-btn-primary:hover{background:#ffa27e;color:var(--ground)}
 
-/* the launcher: a compact pill tucked into the corner, clear of the hero labels on load and of the footer text at the
-   end of the page (the footer keeps 96px below its text) */
+/* the launcher: a compact pill tucked into the corner. On / it steps aside while it would sit on a hero project
+   (landing.css, hero-scene.js); at the end of a page it stays clear of the footer text (the footer keeps 96px below it) */
 .sh-root .ws-chat .ws-chat-launcher{z-index:21;right:16px;bottom:16px;padding:0 18px;box-shadow:0 0 0 6px rgba(13,17,23,.35),0 10px 30px rgba(0,0,0,.45)}
 
 /* the panel */

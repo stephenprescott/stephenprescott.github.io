@@ -208,7 +208,7 @@ test('live contact form: controls meet the 44px touch target at 375px and the ho
 test('chat widget open: axe finds no serious or critical violations on / (dark only)', async () => {
   const live = await serve(await build('development', { chatEndpoint: 'https://chat.test/ask' }));
   try {
-    const ctx = await browser.newContext();
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } }); // 1440×900: the launcher is clear of the hero projects
     const page = await ctx.newPage();
     await page.goto(live.url + '/');
     await page.click('[data-chat-launcher]');
@@ -246,7 +246,7 @@ async function axeBad(page) {
 test('chat with content on /: axe finds no serious or critical violations (dark only)', async () => {
   const live = await serve(await build('development', { chatEndpoint: CHAT_ENDPOINT }));
   const newPage = async (seed) => {
-    const ctx = await browser.newContext();
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } }); // 1440×900: the launcher is clear of the hero projects
     await ctx.addInitScript((s) => {
       if (s && !sessionStorage.getItem('ws-chat-seeded')) {
         sessionStorage.setItem('ws-chat', JSON.stringify(s));

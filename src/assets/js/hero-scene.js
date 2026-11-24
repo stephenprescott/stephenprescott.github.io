@@ -1402,7 +1402,10 @@
     if (bgRaf) cancelAnimationFrame(bgRaf);
     bgRaf = 0; clearTimeout(rsT);
     if (io) io.disconnect();
-    root.classList.remove('lp-scene-on');
+    if (yieldMO) yieldMO.disconnect();
+    if (yieldRaf) cancelAnimationFrame(yieldRaf);
+    yieldRaf = 0;
+    root.classList.remove('lp-scene-on', 'lp-chat-yield');
     hero.classList.remove('lp-arc', 'lp-compact');
     scene.textContent = ''; scene.removeAttribute('style'); scene.classList.remove('drawn');
     [bgCv, moreNote].forEach(function (n) { if (n && n.parentNode) n.parentNode.removeChild(n); });
@@ -1434,6 +1437,30 @@
       return { key: p.slug, shape: shape, li: li, a: a, tag: tag, card: card, idx: -1, g: null };
     });
   }
+  /* ============ the chat launcher yields to the projects ============
+     The floating chat launcher (chat.js) hides (html.lp-chat-yield, styled in landing.css) while its box, plus 8px,
+     touches a shown hero project (its box, drawing or label) or the "+N more below" line, and returns as soon as nothing
+     is under it; meanwhile the hero's "Ask my AI" button opens the chat. It stays while the panel is open: it is the
+     panel's toggle and where focus returns. Checked once per frame at most, on scroll, resize, relayout and when chat.js
+     shows the launcher or opens and closes the panel. */
+  var launcher = document.querySelector('[data-chat-launcher]'), yieldRaf = 0, yieldMO = null;
+  function boxOf(r) { return { l: r.left, r: r.right, t: r.top, b: r.bottom }; }
+  function checkYield() {
+    yieldRaf = 0;
+    if (dead || !launcher) return;
+    var hit = false;
+    if (!launcher.hidden && launcher.getAttribute('aria-expanded') !== 'true') {
+      var L = boxOf(launcher.getBoundingClientRect());
+      var items = hero.querySelectorAll('.lp-projects > li:not(.lp-off), .lp-projects > li:not(.lp-off) .lp-proj-t, .lp-projects > li:not(.lp-off) .lp-proj-e, .lp-more-below');
+      for (var i = 0; i < items.length && !hit; i++) {
+        var rs = items[i].getClientRects();
+        for (var j = 0; j < rs.length && !hit; j++) if (rs[j].width && rectHit(L, boxOf(rs[j]), 8)) hit = true;
+      }
+    }
+    root.classList.toggle('lp-chat-yield', hit);
+  }
+  function queueYield() { if (!yieldRaf && !dead && launcher) yieldRaf = requestAnimationFrame(checkYield); }
+
   function markDrawn(t) {
     if (t === scene) { if (!t0Sky) { t0Sky = performance.now(); scene.classList.add('drawn'); } }
     else t.classList.add('drawn');
@@ -1478,10 +1505,18 @@
     }
     [scene, ul].forEach(function (t) { if (t) { if (io && !paused) io.observe(t); else markDrawn(t); } });
     document.addEventListener('visibilitychange', guard(function () { if (document.hidden) stopLoop(); else startLoop(); }));
-    window.addEventListener('scroll', function () { bgStill(); }, { passive: true });
+    window.addEventListener('scroll', function () { bgStill(); queueYield(); }, { passive: true });
+    if (launcher) {
+      if ('MutationObserver' in window) {
+        yieldMO = new MutationObserver(queueYield);
+        yieldMO.observe(launcher, { attributes: true, attributeFilter: ['hidden', 'aria-expanded'] });
+      }
+      queueYield();
+    }
     /* re-layout on resize (debounced), with the loop stopped while the stage is rebuilt */
     window.addEventListener('resize', function () {
       if (dead) return;
+      queueYield();
       clearTimeout(rsT);
       rsT = setTimeout(guard(function () {
         stopLoop();
@@ -1490,6 +1525,7 @@
         if (paused) drawFlow();
         paintBg(0, true);
         startLoop();
+        queueYield();
       }), 150);
     });
     var onMotion = guard(function (e) { setPaused(e.matches); });
