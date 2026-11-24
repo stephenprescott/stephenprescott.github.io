@@ -116,6 +116,15 @@ test('work: one row per project with heading, summary and case-study link', asyn
   assert.equal(text($('#contact h2')), "Let's talk.");
 });
 
+test('contact: heading with its accent word, then the email and LinkedIn links in that order', async () => {
+  const $ = await page();
+  assert.equal(text($('#contact h2')), "Let's talk.");
+  assert.equal(text($('#contact h2 .acc')), 'talk');
+  const links = $('#contact .lp-c-links a');
+  assert.deepEqual(links.map((_, e) => e.attribs.href).get(), [`mailto:${site.email}`, 'https://www.linkedin.com/in/groffstephen']);
+  assert.deepEqual(links.map((_, e) => text($(e).find('small'))).get(), ['Email', 'LinkedIn']);
+});
+
 test('#lp-data holds the landing data as JSON, and nothing for a hero chat', async () => {
   const $ = await page();
   const json = JSON.parse($('script#lp-data[type="application/json"]').html());

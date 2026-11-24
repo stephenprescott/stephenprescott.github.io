@@ -83,7 +83,7 @@
 <section class="lp-sec" id="contact"><div class="lp-wrap lp-mod">
 {{ sectionHead(no, home.contact.eyebrow, home.contact.title, home.contact.accent) }}
 <div class="lp-mod-b">
-<div class="lp-c-links">{% for s in site.social %}<a class="lp-c-link" href="{{ s.href }}"><small>{{ s.label }}</small><span>{{ s.href | replace("mailto:", "") | replace("https://www.linkedin.com/", "") }}</span></a>{% endfor %}</div>
+<div class="lp-c-links">{% for want in ["Email", "LinkedIn"] %}{% for s in site.social %}{% if s.label == want %}<a class="lp-c-link" href="{{ s.href }}"><small>{{ s.label }}</small><span>{{ s.href | replace("mailto:", "") | replace("https://www.linkedin.com/", "") }}</span></a>{% endif %}{% endfor %}{% endfor %}</div>
 {% if contact.enabled !== false %}{{ contactForm(action="#", disabled=not contact.web3formsKey, email=site.email, accessKey=contact.web3formsKey) }}{% endif %}
 </div>
 </div></section>
