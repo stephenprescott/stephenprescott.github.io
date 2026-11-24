@@ -127,12 +127,12 @@ test('starter chips send their question', async () => {
   await ctx.close();
 });
 
-test('StephenChat API and ws:role starters', async () => {
+test('StephenChat API and setStarters', async () => {
   const { ctx, page } = await open();
   const bodies = await fakeWorker(page);
   await page.goto(live.url + '/');
   assert.deepEqual(await page.evaluate(() => Object.keys(window.StephenChat).sort()), ['ask', 'open', 'setStarters']);
-  await page.evaluate(() => document.dispatchEvent(new CustomEvent('ws:role', { detail: { starters: ['Role question one?', 'Two?'] } })));
+  await page.evaluate(() => window.StephenChat.setStarters(['Role question one?', 'Two?']));
   await page.evaluate(() => window.StephenChat.open());
   assert.deepEqual(await page.$$eval('[data-chat-starters] button', (b) => b.map((x) => x.textContent.trim())), ['Role question one?', 'Two?']);
   await page.evaluate(() => window.StephenChat.ask('Via API'));

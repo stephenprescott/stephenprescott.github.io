@@ -28,3 +28,11 @@ export async function build(env = 'development', overrides = {}) {
   }
   return out;
 }
+
+/** Run `fn` with console output muted, then restore it. For builds that are meant to fail: Eleventy prints the
+    error and a stack trace itself, which is noise in the test report (the assertion still sees the rejection). */
+export async function muted(fn) {
+  const saved = { log: console.log, warn: console.warn, error: console.error };
+  console.log = console.warn = console.error = () => {};
+  try { return await fn(); } finally { Object.assign(console, saved); }
+}

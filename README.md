@@ -8,11 +8,25 @@ Toolchain verified: Node v20.20.2, npm 10.8.2, git 2.55.0.
 
 Add one entry to `src/_data/projects.json`: `slug`, `title`, `eyebrow`, `summary`, `image`, `imageAlt`, `tags`, `href`. It appears on the landing page and `/projects/` with no template edits; if it has a `caseStudy` and no `href`, its card links to the case study page automatically. For a case study page, add a `caseStudy` object (`meta`, `problem`, `approach`, `result`, `figures`, `stats`); the page is generated at `/projects/<slug>/` and prev/next links follow list order. Set `"placeholder": true` on anything unfinished: `npm run build:prod` refuses to build until every placeholder is gone.
 
+Landing-page extras on a project entry: `proves` (a list of expertise ids from `home.json` `expertise.items`; the project then lights up under those areas in the star chart, and an unknown id fails the build) and an optional `shortTitle` (the name shown in the hero constellation and project list; by default it is the title up to the first colon). A project with a slug that has no drawing in `src/_includes/components/project-glyph.njk` gets a generic glyph.
+
+## Adding a figure
+
+Add an object to `home.stats` in `src/_data/home.json`: `id`, `value`, optional `suffix`, `label`, `proves` (expertise ids) and `bodyFrom`, which points at existing text so nothing is retyped: `hero.body#1`, or `expertise:<area id>` (add `#1` to keep only the first sentence). The figure appears in the Results section and in the star chart with no template edits.
+
+## Where the drawings live
+
+- Hero scene (canvas): `src/assets/js/hero-scene.js`; styles in `src/assets/css/landing.css`.
+- Star chart, proof panel and work accordion: `src/assets/js/landing-chart.js` (data comes from the `#lp-data` JSON block rendered by `src/_includes/partials/landing.njk`).
+- Project glyphs (SVG): `src/_includes/components/project-glyph.njk`.
+- Dark shell (nav, footer, tokens): `src/_includes/layouts/shell.njk`, `src/assets/css/shell.css`; chat restyle: `src/assets/css/chat-shell.css`.
+- Size limits for these files: `test/budget.test.mjs`.
+
 Commands: `npm run dev` (preview), `npm run build`, `npm run build:prod` (fails on placeholder content or missing launch values), `npm test`.
 
 ## Phase 2 / Launch
 
-**What phase 2 adds:** landing page with role picker (Executive, Recruiter, Client), five case studies under `/projects/`, `/resume/` with a PDF download, motion, `/llms.txt`, the chat knowledge pack at `/chat/knowledge.json`, the chat widget, and the contact form (Web3Forms). Nothing is live until the steps below are done.
+**What phase 2 adds:** landing page (hero scene, star chart, results, expertise, work, contact), five case studies under `/projects/`, `/resume/` with a PDF download, motion, `/llms.txt`, the chat knowledge pack at `/chat/knowledge.json`, the chat widget, and the contact form (Web3Forms). Nothing is live until the steps below are done.
 
 **Production gate.** `npm run build:prod` refuses to build while any data node has `"placeholder": true` (today: `chat.json`, `contact.json`, `home.json`, `projects.json`, `resume.json`), while `chat.json` `endpoint` is empty or not `https://`, or while `contact.json` `web3formsKey` is empty. Setting `"enabled": false` in either file skips its check; for chat that also means no chat UI renders.
 

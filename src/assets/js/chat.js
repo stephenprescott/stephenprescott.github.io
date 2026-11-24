@@ -255,9 +255,5 @@
 
   launcher.hidden = false;
 
-  document.addEventListener('ws:role', function (e) {
-    if (e.detail && Array.isArray(e.detail.starters) && e.detail.starters.length) setStarters(e.detail.starters);
-  });
-
   window.StephenChat = { open: function () { open(); }, ask: ask, setStarters: setStarters };
 })();

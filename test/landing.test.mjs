@@ -5,7 +5,7 @@ import { mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import * as cheerio from 'cheerio';
-import { build } from './helpers/build.mjs';
+import { build, muted } from './helpers/build.mjs';
 import { renderTemplate } from './helpers/render.mjs';
 import { assertNoPlaceholders } from '../lib/placeholders.mjs';
 import { assertProductionConfig, chatEndpointFor } from '../lib/production.mjs';
@@ -217,7 +217,7 @@ async function withScanDir(files, fn) {
 
 test('production build fails when scanned data holds a placeholder; development build ignores it', async () => {
   await withScanDir({ 'projects.json': [{ title: 'x', placeholder: true }] }, async () => {
-    await assert.rejects(() => build('production'), /placeholder content in production: projects\[0\]/);
+    await assert.rejects(() => muted(() => build('production')), /placeholder content in production: projects\[0\]/);
     await assert.doesNotReject(() => build('development'));
   });
 });
@@ -254,14 +254,14 @@ test('chatEndpointFor: env var wins; "enabled": false renders no chat', () => {
 test('production build fails on an empty or non-https chat endpoint or an empty contact key', async () => {
   const ok = { 'projects.json': [{ title: 'x' }] };
   await withScanDir({ ...ok, 'chat.json': { endpoint: '' }, 'contact.json': LIVE_CONTACT }, async () => {
-    await assert.rejects(() => build('production'), /chat\.json endpoint/);
+    await assert.rejects(() => muted(() => build('production')), /chat\.json endpoint/);
     await assert.doesNotReject(() => build('development'));
   });
   await withScanDir({ ...ok, 'chat.json': { endpoint: 'http://ask.example.dev/' }, 'contact.json': LIVE_CONTACT }, async () => {
-    await assert.rejects(() => build('production'), /chat\.json endpoint/);
+    await assert.rejects(() => muted(() => build('production')), /chat\.json endpoint/);
   });
   await withScanDir({ ...ok, 'chat.json': LIVE_CHAT, 'contact.json': { web3formsKey: '' } }, async () => {
-    await assert.rejects(() => build('production'), /contact\.json web3formsKey/);
+    await assert.rejects(() => muted(() => build('production')), /contact\.json web3formsKey/);
   });
   await withScanDir({ ...ok, 'chat.json': { endpoint: '', enabled: false }, 'contact.json': { web3formsKey: '', enabled: false } }, async () => {
     await assert.doesNotReject(() => build('production'));

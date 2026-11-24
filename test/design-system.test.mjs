@@ -17,6 +17,8 @@ test('design system css, fonts and site files are vendored into the build', asyn
   }
   assert.match(readFileSync(join(dir, 'assets/css/bundle.css'), 'utf8'), /\.ws-hero-title/);
   assert.ok(existsSync(join(dir, 'assets/css/site.css')));
+  for (const f of ['shell.css', 'landing.css', 'chat-shell.css']) assert.ok(existsSync(join(dir, `assets/css/${f}`)), f);
+  for (const w of [300, 400, 500, 600, 700]) assert.ok(existsSync(join(dir, `assets/css/fonts/space-grotesk-latin-${w}-normal.woff2`)), `Space Grotesk ${w}`);
   for (const f of ['robots.txt', 'site.webmanifest', 'favicon.svg', 'icon-16.png', 'icon-32.png', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png']) {
     assert.ok(existsSync(join(dir, f)), f);
   }
