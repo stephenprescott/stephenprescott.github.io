@@ -145,8 +145,10 @@ test('keyboard: skip link is first and every focusable element shows a focus out
   await page.goto(server.url + '/');
   await page.keyboard.press('Tab');
   assert.equal(await page.evaluate(() => document.activeElement.className), 'sh-skip');
-  // only rendered controls take a tab stop (the shell's menu button is display:none on wide screens)
-  const count = await page.evaluate(() => [...document.querySelectorAll('a[href], button:not([disabled]):not([hidden]), input:not([type=radio]):not([type=hidden]):not([tabindex="-1"]), textarea')].filter((e) => e.getClientRects().length).length);
+  // only rendered controls take a tab stop (the shell's menu button is display:none on wide screens; links in a
+  // closed accordion are visibility:hidden; the star chart's stars are one roving tab stop)
+  const count = await page.evaluate(() => [...document.querySelectorAll('a[href], button:not([disabled]):not([hidden]), input:not([type=radio]):not([type=hidden]), textarea')]
+    .filter((e) => e.getAttribute('tabindex') !== '-1' && e.getClientRects().length && getComputedStyle(e).visibility !== 'hidden').length);
   const lacking = [];
   for (let i = 0; i < count; i++) {
     const info = await page.evaluate(() => {
