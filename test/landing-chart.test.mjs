@@ -9,6 +9,7 @@ import { chromium } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
 import { build } from './helpers/build.mjs';
 import { serve } from './helpers/serve.mjs';
+import { withData as withLpData } from './helpers/lp-data.mjs';
 import { buildLandingData } from '../lib/landing-data.mjs';
 
 const root = resolve(import.meta.dirname, '..');
@@ -46,18 +47,7 @@ async function withPage(opts, fn) {
 }
 
 // Serve / with #lp-data replaced by mutate(original data) (or by a raw string).
-const withData = (mutate) => async (page) => {
-  await page.route(server.url + '/', async (route) => {
-    const res = await route.fetch();
-    const html = await res.text();
-    const body = html.replace(/(<script type="application\/json" id="lp-data">)([\s\S]*?)(<\/script>)/, (_, a, json, c) => {
-      const next = typeof mutate === 'string' ? mutate : JSON.stringify(mutate(JSON.parse(json))).replace(/</g, '\\u003c');
-      return a + next + c;
-    });
-    assert.notEqual(body, html, 'lp-data replaced');
-    await route.fulfill({ response: res, body });
-  });
-};
+const withData = (mutate) => withLpData(server.url, mutate);
 
 // 19 extra projects (24 in all), each proving "AI tools and platforms" and one other area in turn.
 const twentyFour = (d) => {
