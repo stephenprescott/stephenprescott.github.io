@@ -551,8 +551,10 @@ const watchLauncher = (page) => page.addInitScript(() => {
       const cs = getComputedStyle(l);
       if (cs.display !== 'none' && cs.visibility === 'visible' && Number(cs.opacity) > 0) {
         w.shownFrames++;
-        if (w.firstShownAt < 0) w.firstShownAt = performance.now();
-        w.sceneReadyWhenShown = document.documentElement.classList.contains('lp-scene-on') && !document.documentElement.classList.contains('lp-chat-wait');
+        if (w.firstShownAt < 0) {
+          w.firstShownAt = performance.now();
+          w.sceneReadyWhenShown = document.documentElement.classList.contains('lp-scene-on') && !document.documentElement.classList.contains('lp-chat-wait');
+        }
       }
     }
     requestAnimationFrame(tick);
@@ -560,8 +562,8 @@ const watchLauncher = (page) => page.addInitScript(() => {
   requestAnimationFrame(tick);
 });
 
-test('1280×740: the launcher yields on load and is never visible on the way (no flash)', async () => {
-  const { ctx, page } = await open({ viewport: { width: 1280, height: 740 } });
+for (const vp of [{ width: 1280, height: 740 }, { width: 390, height: 844 }]) test(`${vp.width}×${vp.height}: the launcher yields on load and is never visible on the way (no flash)`, async () => {
+  const { ctx, page } = await open({ viewport: vp });
   await watchLauncher(page);
   await page.goto(live.url + '/');
   await page.waitForFunction(() => document.documentElement.classList.contains('lp-scene-on'), null, { timeout: 30000 });
@@ -587,6 +589,8 @@ test('the scene script blocked: the launcher still ends up visible', async () =>
   const { ctx, page } = await open();
   await page.route('**/hero-scene.js', (route) => route.abort());
   await page.goto(live.url + '/');
+  // well before the 4s backstop (which starts at load): only the script's error listener can have cleared it
+  await page.waitForFunction(() => !document.documentElement.classList.contains('lp-chat-wait'), null, { timeout: 2000 });
   await page.waitForFunction(() => !document.querySelector('[data-chat-launcher]').hidden && getComputedStyle(document.querySelector('[data-chat-launcher]')).visibility === 'visible' && Number(getComputedStyle(document.querySelector('[data-chat-launcher]')).opacity) > 0, null, { timeout: 10000 });
   assert.equal(await page.locator('[data-chat-launcher]').isVisible(), true);
   assert.equal(await page.evaluate(() => document.documentElement.classList.contains('lp-chat-wait')), false);
