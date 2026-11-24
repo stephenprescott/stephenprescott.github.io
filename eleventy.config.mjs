@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url';
 import { assertNoPlaceholders } from './lib/placeholders.mjs';
 import { assertProductionConfig, chatEndpointFor } from './lib/production.mjs';
 import { jsonLd } from './lib/json-ld.mjs';
+import { assertProofLinks, buildLandingData } from './lib/landing-data.mjs';
 
 export default function (eleventyConfig) {
   const icons = JSON.parse(readFileSync(new URL('./src/_data/icons.json', import.meta.url), 'utf8'));
@@ -20,9 +21,15 @@ export default function (eleventyConfig) {
   }
   eleventyConfig.setNunjucksEnvironmentOptions({ autoescape: true });
 
+  // Landing-page display data (figures, expertise areas, projects with proof links).
+  const readData = (n) => JSON.parse(readFileSync(new URL(`./src/_data/${n}.json`, import.meta.url), 'utf8'));
+  eleventyConfig.addGlobalData('landing', () => buildLandingData(readData('home'), readData('projects')));
+
   // Production builds refuse placeholder content (any data node with `placeholder: true`)
   // and missing launch values (chat endpoint, Web3Forms key).
   eleventyConfig.on('eleventy.before', () => {
+    // Every environment: a project or figure may only prove an expertise area that exists.
+    assertProofLinks(readData('home'), readData('projects'));
     if (process.env.ELEVENTY_ENV !== 'production') return;
     // PLACEHOLDER_SCAN_DIR lets tests point the guard at fixture data.
     const dataDir = process.env.PLACEHOLDER_SCAN_DIR

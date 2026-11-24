@@ -16,42 +16,93 @@
         "variant": "quiet",
         "action": "open-chat"
       }
-    ]
+    ],
+    "headline": "I turn data into decisions",
+    "headlineAccent": "decisions"
   },
-  "stats": [],
+  "stats": [
+    {
+      "id": "years",
+      "value": "10",
+      "suffix": "+",
+      "label": "years of enterprise reporting",
+      "proves": [
+        "analytics-and-executive-reporting"
+      ],
+      "bodyFrom": "hero.body#1"
+    },
+    {
+      "id": "audited",
+      "value": "600",
+      "suffix": "+",
+      "label": "Power BI reports audited",
+      "proves": [
+        "data-as-competitive-advantage"
+      ],
+      "bodyFrom": "expertise:data-as-competitive-advantage#1"
+    },
+    {
+      "id": "retired",
+      "value": "70",
+      "suffix": "%+",
+      "label": "retired",
+      "proves": [
+        "data-as-competitive-advantage"
+      ],
+      "bodyFrom": "expertise:data-as-competitive-advantage#1"
+    },
+    {
+      "id": "models",
+      "value": "12",
+      "suffix": "+",
+      "label": "semantic models serving four business units",
+      "proves": [
+        "data-strategy"
+      ],
+      "bodyFrom": "expertise:data-strategy"
+    }
+  ],
   "expertise": {
     "eyebrow": "Expertise",
     "title": "Data and AI strategy, end to end",
     "items": [
       {
+        "id": "enterprise-data-lifecycle",
         "title": "Enterprise data lifecycle",
         "body": "From source systems to the executive dashboard: I took over and built the SQL Server gold layer for five source systems, including NetSuite, Salesforce, FileMaker and Brightree, and built the pipeline that brings third-party vendor data into the warehouse."
       },
       {
+        "id": "data-strategy",
         "title": "Data strategy",
         "body": "I represent BI in analytics strategy discussions with business and IT leadership, and lead development of 12+ semantic models serving four business units, with KPIs defined alongside data stewards."
       },
       {
+        "id": "ai-tools-and-platforms",
         "title": "AI tools and platforms",
         "body": "Microsoft Copilot agents grounded in team SharePoint content, built on my own initiative and now used by my team and one other business unit, plus working tools I direct Claude Code to build from written specs and tests."
       },
       {
+        "id": "analytics-and-executive-reporting",
         "title": "Analytics and executive reporting",
         "body": "Director to C-suite dashboards, including a real-time order operations display, month-end sales forecasts and automated nightly PDF distribution, plus Power BI, Tableau and Sigma self-service analytics."
       },
       {
+        "id": "governance-and-compliance",
         "title": "Governance and compliance",
         "body": "Moving reporting onto semantic models whose definitions and calculations are owned by business unit data stewards, and regulatory compliance reporting built from the ground up for a health plan: Commercial MLR, Medicare Advantage, Part D and Medicaid Managed Care."
       },
       {
+        "id": "data-as-competitive-advantage",
         "title": "Data as competitive advantage",
         "body": "At Tactile Medical I audited 600+ Power BI reports, retired more than 70% and am moving the rest onto single semantic models so leaders work from one trusted set of figures. At Caterpillar I rebuilt 48+ KPIs to corporate standard formulas so plant decisions rested on validated numbers."
       }
-    ]
+    ],
+    "accent": "end"
   },
   "work": {
     "eyebrow": "Work",
-    "title": "What I've built with AI"
+    "title": "What I've built with AI",
+    "accent": "AI"
   },
   "about": {
     "eyebrow": "About",
@@ -168,6 +219,12 @@
   },
   "contact": {
     "eyebrow": "Contact",
-    "title": "Let's talk"
+    "title": "Let's talk",
+    "accent": "talk"
+  },
+  "results": {
+    "eyebrow": "Results",
+    "title": "By the numbers",
+    "accent": "numbers"
   }
 }

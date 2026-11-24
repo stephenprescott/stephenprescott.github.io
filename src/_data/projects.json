@@ -33,7 +33,12 @@
       "result": "A public demo anyone can open without installing anything. The pages make no network request at runtime, offline copies are available, and a table maps each component to its Databricks, Snowflake and Microsoft Fabric equivalent.",
       "figures": [],
       "stats": []
-    }
+    },
+    "proves": [
+      "enterprise-data-lifecycle",
+      "ai-tools-and-platforms",
+      "governance-and-compliance"
+    ]
   },
   {
     "slug": "kyber-praxis",
@@ -64,7 +69,10 @@
       "result": "A personal board published as a private Claude artifact. Republishing the one source file updates the live page, and the data can be restored from a backup.",
       "figures": [],
       "stats": []
-    }
+    },
+    "proves": [
+      "ai-tools-and-platforms"
+    ]
   },
   {
     "slug": "praxis-fasti",
@@ -98,7 +106,10 @@
       "result": "A planner in daily use, plus a public demo that needs no sign-in and holds only sample data.",
       "figures": [],
       "stats": []
-    }
+    },
+    "proves": [
+      "ai-tools-and-platforms"
+    ]
   },
   {
     "slug": "jobscan-board",
@@ -134,7 +145,10 @@
       "result": "A ranked list I check instead of the sources themselves. A separate demo replays one sample day with made-up data in a neutral setting, so the method can be seen without any real postings.",
       "figures": [],
       "stats": []
-    }
+    },
+    "proves": [
+      "ai-tools-and-platforms"
+    ]
   },
   {
     "slug": "steppenwolf",
@@ -170,6 +184,7 @@
       "result": "Current state: research only, still in progress. It places no orders and is not ready for live use, and nothing here is trading advice.",
       "figures": [],
       "stats": []
-    }
+    },
+    "proves": []
   }
 ]

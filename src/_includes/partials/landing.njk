@@ -22,7 +22,7 @@
 {{ rolePicker(roles, chat.starters) }}
 
 {% if home.stats | length %}
-<section class="ws-section" aria-label="Highlights"><div class="ws-container"><div class="ws-row">{% for s in home.stats %}{{ stat(s.value, s.label, s.note, count=true) }}{% endfor %}</div></div></section>
+<section class="ws-section" aria-label="Highlights"><div class="ws-container"><div class="ws-row">{% for s in home.stats %}{{ stat(s.value ~ (s.suffix or ''), s.label, count=true) }}{% endfor %}</div></div></section>
 {% endif %}
 
 {% if home.expertise.items | length %}
