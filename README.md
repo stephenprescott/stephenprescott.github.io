@@ -1,6 +1,6 @@
 # stephenprescott.github.io
 
-Stephen Groff's portfolio site (Eleventy 3 + Nunjucks), built on the WARMING STRIPES design system, with an "Ask Stephen's AI" chat Worker in `chat/`.
+Stephen Groff's portfolio site (Eleventy 3 + Nunjucks), with an "Ask Stephen's AI" chat Worker in `chat/`. It has two page shells: the dark shell (`src/_includes/layouts/shell.njk`, `src/assets/css/shell.css`, Space Grotesk) for `/`, `/projects/`, the case studies and the 404 page; and the WARMING STRIPES design-system shell (`src/_includes/layouts/base.njk`, light/dark theme toggle), now used only by `/resume/`.
 
 Toolchain verified: Node v20.20.2, npm 10.8.2, git 2.55.0.
 
@@ -26,9 +26,9 @@ Commands: `npm run dev` (preview), `npm run build`, `npm run build:prod` (fails 
 
 ## Phase 2 / Launch
 
-**What phase 2 adds:** landing page (hero scene, star chart, results, expertise, work, contact), five case studies under `/projects/`, `/resume/` with a PDF download, motion, `/llms.txt`, the chat knowledge pack at `/chat/knowledge.json`, the chat widget, and the contact form (Web3Forms). Nothing is live until the steps below are done.
+**What phase 2 adds:** landing page (hero scene, star chart, results, expertise, work, contact), five case studies under `/projects/`, `/resume/` with a PDF download, motion, `/llms.txt`, the chat knowledge pack at `/chat/knowledge.json`, the chat widget, and the contact form (Web3Forms). The site is live: the launch steps below have been done and are kept as the record of how it was set up (and what to repeat for a new Worker or a fresh deploy).
 
-**Production gate.** `npm run build:prod` refuses to build while any data node has `"placeholder": true` (today: `chat.json`, `contact.json`, `home.json`, `projects.json`, `resume.json`), while `chat.json` `endpoint` is empty or not `https://`, or while `contact.json` `web3formsKey` is empty. Setting `"enabled": false` in either file skips its check; for chat that also means no chat UI renders.
+**Production gate.** `npm run build:prod` refuses to build while any data node has `"placeholder": true` (none today), while `chat.json` `endpoint` is empty or not `https://`, or while `contact.json` `web3formsKey` is empty. Setting `"enabled": false` in either file skips its check; for chat that also means no chat UI renders.
 
 **Launch steps (Stephen, in order):**
 

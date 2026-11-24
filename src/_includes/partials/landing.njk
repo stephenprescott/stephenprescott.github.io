@@ -92,4 +92,4 @@
 <script type="application/json" id="lp-data">{{ { areas: landing.areas, figures: landing.figures, projects: landing.projects } | dump | replace("<", "\\u003c") | safe }}</script>
 {#- Keeps the chat launcher invisible until hero-scene.js has run its first yield check (no flash where it yields).
     Released by the scene, by an error loading the scene script, or 4s after load, so it is never left hidden. -#}
-<script>(function(){var r=document.documentElement;r.classList.add('lp-chat-wait');function go(){r.classList.remove('lp-chat-wait')}window.addEventListener('error',function(e){var t=e.target;if(t&&t.src&&/hero-scene/.test(t.src))go()},true);window.addEventListener('load',function(){setTimeout(go,4000)})})();</script>
+<script>(function(){var r=document.documentElement;r.classList.add('lp-chat-wait');function go(){r.classList.remove('lp-chat-wait')}window.addEventListener('error',function(e){var t=e.target;if(t&&t.src&&/hero-scene/.test(t.src)){go();r.classList.add('lp-scene-off')}},true);window.addEventListener('load',function(){setTimeout(go,4000)})})();</script>

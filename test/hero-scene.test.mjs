@@ -223,11 +223,13 @@ async function assertContentShown(page) {
   }
 }
 
-test('without the scene (script blocked, or canvas unavailable) all content stays visible and the scene stays off', async () => {
+test('without the scene (script blocked, or canvas unavailable) all content stays visible, the scene stays off and the headline moves up', async () => {
   await withPage({ ready: false, setup: (page) => page.route('**/hero-scene.js', (r) => r.abort()) }, async (page) => {
     await page.waitForLoadState('load');
     await assertContentShown(page);
     assert.equal(await page.evaluate(() => document.documentElement.classList.contains('lp-scene-on')), false);
+    const top = await page.evaluate(() => document.querySelector('.lp-headline').getBoundingClientRect().top);
+    assert.ok(top < 200, `headline top ${top}`);
   });
   await withPage({ ready: false, setup: (page) => page.addInitScript(() => { HTMLCanvasElement.prototype.getContext = () => null; }) }, async (page, errors) => {
     await page.waitForLoadState('load');
@@ -236,6 +238,9 @@ test('without the scene (script blocked, or canvas unavailable) all content stay
     assert.equal(await page.evaluate(() => document.documentElement.classList.contains('lp-scene-on')), false);
     assert.equal(await page.locator('#lp-scene canvas, canvas.lp-bg').count(), 0, 'canvases removed');
     assert.equal(errors.length, 1, 'logged once');
+    // the room the scene would have taken above the headline is given back
+    const top = await page.evaluate(() => document.querySelector('.lp-headline').getBoundingClientRect().top);
+    assert.ok(top < 200, `headline top ${top}`);
   });
 });
 

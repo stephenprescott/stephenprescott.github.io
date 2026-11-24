@@ -1395,9 +1395,11 @@
     if (!logged) { logged = true; console.error(e); }
     teardown();
   }
-  /* back to the server-rendered hero: no canvases, no lp-scene-on, no inline layout */
+  /* back to the server-rendered hero: no canvases, no lp-scene-on, no inline layout; lp-scene-off gives back the room the
+     scene would have taken above the headline (landing.css) */
   function teardown() {
     dead = true;
+    root.classList.add('lp-scene-off');
     stopLoop();
     if (bgRaf) cancelAnimationFrame(bgRaf);
     bgRaf = 0; clearTimeout(rsT);

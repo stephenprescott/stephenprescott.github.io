@@ -317,6 +317,86 @@ test('reduced motion: no running animations after selecting an area', async () =
   });
 });
 
+// The hero scene marks #top with .lp-arc (projects on the arc), so the chart's arc path must not use that class: its
+// stroke would be inherited by every star drawn in the hero.
+test('1440: the chart arc keeps its stroke and the hero (#top.lp-arc) inherits none', async () => {
+  await withPage({}, async (page) => {
+    await page.waitForFunction(() => document.querySelector('#top.lp-arc'), null, { timeout: 30000 });
+    const s = await page.evaluate(() => {
+      const arc = document.querySelector('svg.lp-chart .lp-chart-arc');
+      return { top: getComputedStyle(document.getElementById('top')).stroke, arc: arc && getComputedStyle(arc).stroke };
+    });
+    assert.equal(s.top, 'none');
+    assert.equal(s.arc, 'rgba(154, 167, 187, 0.2)');
+  });
+});
+
+// Points along each line of the selected area (25%, 50%, 75% and 97% of its length) where no line pixel shows. Stars,
+// nodes, tooltip and the page's starfield are hidden first so only the lines can match (cyan: green well above red).
+async function lineGaps(page) {
+  await page.addStyleTag({ content: '.lp-dot,.lp-nodes,.lp-tip,.lp-bg{visibility:hidden!important}' });
+  await page.evaluate(() => document.querySelector('.lp-starchart').scrollIntoView({ block: 'center', behavior: 'instant' }));
+  const pts = await page.evaluate(() => [...document.querySelectorAll('svg.lp-chart .lp-lines path')].flatMap((p, i) => {
+    const len = p.getTotalLength(), m = p.getScreenCTM();
+    return [0.25, 0.5, 0.75, 0.97].map((t) => { const q = p.getPointAtLength(len * t).matrixTransform(m); return { line: i, t, x: Math.round(q.x), y: Math.round(q.y) }; });
+  }));
+  assert.ok(pts.length >= 4, 'lines drawn');
+  const png = (await page.screenshot()).toString('base64');
+  const gaps = await page.evaluate(async ({ png, pts }) => {
+    const bmp = await createImageBitmap(await (await fetch('data:image/png;base64,' + png)).blob());
+    const g = new OffscreenCanvas(bmp.width, bmp.height).getContext('2d');
+    g.drawImage(bmp, 0, 0);
+    return pts.filter(({ x, y }) => {
+      const d = g.getImageData(x - 2, y - 2, 5, 5).data;
+      for (let i = 0; i < d.length; i += 4) if (d[i + 1] - d[i] > 25) return false;
+      return true;
+    });
+  }, { png, pts });
+  return { pts, gaps };
+}
+
+// Lines use pathLength="1" with a non-scaling stroke, so their dash is measured on screen; from 781 to 1180px the chart
+// is wider than its 780-unit viewBox and a fixed dash of 1 used to stop short of the star.
+for (const width of [800, 1024, 1180, 1440, 1600]) {
+  test(`${width}px, reduced motion: every line of the selected area reaches its star`, async () => {
+    await withPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' }, async (page) => {
+      await page.evaluate(() => window.LandingChart.select('ai-tools-and-platforms'));
+      const { gaps } = await lineGaps(page);
+      assert.deepEqual(gaps, []);
+    });
+  });
+}
+
+test('resizing 1440 → 1180px (reduced motion): the lines still reach their stars', async () => {
+  await withPage({ reducedMotion: 'reduce' }, async (page) => {
+    await page.evaluate(() => window.LandingChart.select('ai-tools-and-platforms'));
+    await page.setViewportSize({ width: 1180, height: 900 });
+    await page.waitForFunction(() => document.querySelector('.lp-starchart').getBoundingClientRect().width > 1000);
+    const { gaps } = await lineGaps(page);
+    assert.deepEqual(gaps, []);
+  });
+});
+
+test('1024px: the lines still draw in (nothing shows at the start of the animation) and end complete', async () => {
+  await withPage({ viewport: { width: 1024, height: 900 } }, async (page) => {
+    await page.evaluate(() => window.LandingChart.select('ai-tools-and-platforms'));
+    // every animation on the area's lines: count, rewind and pause, or finish
+    const lines = (what) => page.evaluate((w) => {
+      const anims = [...document.querySelectorAll('svg.lp-chart .lp-lines path')].flatMap((p) => p.getAnimations());
+      if (w === 'start') anims.forEach((a) => { a.pause(); a.currentTime = 0; });
+      if (w === 'end') anims.forEach((a) => a.finish());
+      return anims.length;
+    }, what);
+    assert.ok((await lines('count')) >= 4, 'each line animates');
+    await lines('start');
+    const start = await lineGaps(page);
+    assert.equal(start.gaps.length, start.pts.length, 'no line pixel at the start');
+    await lines('end');
+    const end = await lineGaps(page);
+    assert.deepEqual(end.gaps, []);
+  });
+});
+
 test('bad #lp-data leaves the server-rendered lists in place', async () => {
   for (const bad of ['{', '{"areas":"x","figures":"y","projects":"z"}']) {
     await withPage({ setup: withData(bad), ready: false }, async (page) => {

@@ -6,8 +6,9 @@ import * as cheerio from 'cheerio';
 import { build } from './helpers/build.mjs';
 
 // Size budgets for the landing page, on the built, unminified files.
-// Measured 2026-11-24 (bytes): hero-scene.js 91300, landing-chart.js 27477, landing.css 33407 + shell.css 6233 = 39640,
-// chat-shell.css 3289. Each limit is measured x 1.15, rounded up to the next KB.
+// Each limit is the first measurement x 1.15, rounded up to the next KB (hero-scene.js 91300, landing-chart.js 27477,
+// landing.css 33407 + shell.css 6233 = 39640, chat-shell.css 3289). Re-measured 2026-11-24 after the final review fixes
+// (bytes): hero-scene.js 89881, landing-chart.js 28280, landing.css 35336 + shell.css 6807 = 42143, chat-shell.css 3289.
 const KB = 1024;
 const BUDGET = {
   'hero-scene.js': 103 * KB,

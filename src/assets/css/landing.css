@@ -51,6 +51,8 @@ a.lp-proj:hover .lp-proj-t i,a.lp-proj:focus-visible .lp-proj-t i{opacity:1;tran
    nav, as tall as the script sets it; the script places the headline block, the core label and the project links on it.
    #top.lp-arc: projects on the arc (wide screens); #top.lp-compact: the hole over the headline, projects as cards below. */
 .js .lp-hero{padding-top:340px}
+/* the scene failed or its script did not load (hero-scene.js, landing.njk): the hero's own spacing again */
+html.lp-scene-off .lp-hero{padding-top:72px}
 .js .lp-text .lp-lede{max-width:27em}
 .lp-tag{display:contents}
 .lp-cst-card{display:none}
@@ -222,8 +224,10 @@ a.lp-pr:hover .arr,a.lp-pr:focus-visible .arr{color:var(--accent);transform:tran
     radial-gradient(1px 1px at 85% 66%,rgba(216,222,233,.22),transparent 100%),
     radial-gradient(60% 46% at 50% 78%,rgba(79,216,235,.05),rgba(79,216,235,0) 100%)}
 .lp-chart{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-.lp-arc{fill:none;stroke:rgba(154,167,187,.2);stroke-width:1;vector-effect:non-scaling-stroke}
-.lp-line{fill:none;stroke:rgba(79,216,235,.6);stroke-width:1;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;animation:lp-line .6s cubic-bezier(.6,.05,.3,1) forwards}
+.lp-chart-arc{fill:none;stroke:rgba(154,167,187,.2);stroke-width:1;vector-effect:non-scaling-stroke}
+/* a line has pathLength=1, but its stroke does not scale, so the dash is measured on screen: --lp-dash (landing-chart.js:
+   chart width / 780, plus a little) keeps one dash as long as the drawn line at any chart width */
+.lp-line{fill:none;stroke:rgba(79,216,235,.6);stroke-width:1;vector-effect:non-scaling-stroke;stroke-dasharray:var(--lp-dash,1);stroke-dashoffset:var(--lp-dash,1);animation:lp-line .6s cubic-bezier(.6,.05,.3,1) forwards}
 .lp-line.rev{stroke:rgba(255,138,92,.7)}
 .lp-line.soft{stroke:rgba(255,138,92,.42)}
 @keyframes lp-line{to{stroke-dashoffset:0}}
@@ -419,4 +423,20 @@ button.lp-pr:hover .arr,button.lp-pr:focus-visible .arr{color:var(--accent);tran
   .lp-line{stroke-dashoffset:0}
   .lp-seg:not(.dt){stroke-dashoffset:0!important}
   .lp-seg.dt,.lp-star{opacity:1!important}
+}
+
+/* ---------- print (shell.css sets the colours): the hero as plain flow, every project listed, no scene ---------- */
+@media print{
+  #lp-scene,.lp-bg,.lp-core-label,.lp-glyph,.lp-cst-card,.lp-more-note,.lp-tip{display:none!important}
+  .lp-hero,html.lp-scene-on .lp-hero{margin:0!important;padding:24px 0 0!important}
+  .lp-text,.lp-projects,.lp-projects > li,.lp-proj,.lp-tag{position:static!important;inset:auto!important;transform:none!important;width:auto!important;height:auto!important;max-width:none!important}
+  .lp-text{margin:0 auto!important}
+  .lp-projects{display:flex!important;margin:32px auto 0!important}
+  .lp-projects > li.lp-off{display:block!important}
+  .lp-proj{display:flex!important}
+  .lp-lede,.lp-proj-e{opacity:1!important;transform:none!important}
+  /* the chart's stars, node rings and legend marks in black */
+  .lp-dot i,.mk{background:#000!important}
+  .lp-dot.k-wip i,.mk.k-wip,.mk.k-area{background:transparent!important;box-shadow:inset 0 0 0 1.5px #000!important}
+  .lp-node .nd::before{box-shadow:inset 0 0 0 1.5px #000!important}
 }

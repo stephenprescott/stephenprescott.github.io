@@ -79,3 +79,12 @@ html.sh{scroll-behavior:smooth;scroll-padding-top:80px;-webkit-text-size-adjust:
   .sh-foot{margin-top:88px}
   .sh-foot-in{justify-content:center;text-align:center}
 }
+
+/* print: black text on white, no page chrome (nav, skip link, chat), no backdrop or motion */
+@media print{
+  .sh-root{background:#fff!important;color:#000!important}
+  .sh-root::before{content:none}
+  .sh-root *,.sh-root *::before,.sh-root *::after{color:#000!important;background:transparent!important;text-shadow:none!important;box-shadow:none!important;animation:none!important;transition:none!important}
+  .sh-root a{text-decoration:underline}
+  .sh-nav,.sh-skip,.sh-menu-btn,.ws-chat,[data-chat-launcher],[data-chat-panel],[data-chat-open]{display:none!important}
+}

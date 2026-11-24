@@ -100,7 +100,7 @@
     main.innerHTML =
       '<div class="lp-starchart">' +
         '<svg class="lp-chart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-hidden="true" focusable="false">' +
-          '<path class="lp-arc" d="M20 341.4 Q390 258.6 760 341.4"/><g class="lp-lines"></g><g class="lp-lines-hover"></g></svg>' +
+          '<path class="lp-chart-arc" d="M20 341.4 Q390 258.6 760 341.4"/><g class="lp-lines"></g><g class="lp-lines-hover"></g></svg>' +
         '<div class="lp-dots" role="group" aria-label="' + two(ITEMS.length) + ' stars">' + order.map(function (it, i) {
           var p = POS[it.id];
           return '<button class="lp-dot ' + kindCls(it) + '" type="button" data-id="' + esc(it.id) + '" tabindex="' + (i ? -1 : 0) + '" style="left:' + (p.x / W * 100) + '%;top:' + (p.y / H * 100) + '%" aria-label="' +
@@ -132,6 +132,8 @@
     path.setAttribute('class', 'lp-line' + (cls ? ' ' + cls : ''));
     group.appendChild(path);
   }
+  /* the lines' dash is measured on screen (non-scaling stroke): one dash must span the chart's scale (landing.css) */
+  function fitLines() { if (V.chart) V.chart.style.setProperty('--lp-dash', (V.chart.getBoundingClientRect().width / W + 0.02).toFixed(3)); }
   function dotOf(id) { return $$('.lp-dot', V.dots).filter(function (d) { return d.dataset.id === id; })[0]; }
   function swap(el) { if (reduced()) return; el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); }
 
@@ -305,14 +307,14 @@
     if (it.areas.length && it.areas.indexOf(curArea) < 0) curArea = it.areas[0];
     curItem = id; paint();
   }
-  /* a "Proves" chip or the hero jumps to an area: the chart on desktop, its accordion on phones */
+  /* a "Proves" chip (or LandingChart.select) jumps to an area: the chart on desktop, its accordion on phones */
   function goArea(a) {
     selectArea(a);
     if (V.xacc) { var li = V.xacc.children[a]; if (li) { toggle(li, true); bring(li); } }
     else bring(expertise);
   }
 
-  /* a figure (or the hero) finds its star: opened in the chart, or its first area's accordion on phones */
+  /* a figure (or LandingChart.open) finds its star: opened in the chart, or its first area's accordion on phones */
   function findItem(id) {
     var it = BYID[id]; if (!it) return;
     if (!V.xacc) { openItem(id); bring(V.chart, 'center'); }
@@ -336,6 +338,7 @@
       mod.classList.add('lp-sc');
       head.after(view.panel);
       while (view.main.firstChild) body.appendChild(view.main.firstChild);
+      fitLines();
     }
     setState();
   }
@@ -425,6 +428,8 @@
     $$('#results [data-fig]').forEach(function (s) {
       on(s, 'click', function (e) { if (BYID[s.dataset.fig]) { e.preventDefault(); findItem(s.dataset.fig); } });
     });
+
+    on(window, 'resize', fitLines);
 
     /* crossing the phone breakpoint rebuilds the other view (addListener: Safari before 14) */
     var onMQ = function () { if (!live) return; try { mount(build()); } catch (e) { console.error(e); } };

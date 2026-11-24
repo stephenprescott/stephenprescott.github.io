@@ -240,13 +240,22 @@ test('reduced motion: chat widget has no transitions', async () => {
   await ctx.close();
 });
 
-test('320px: panel fits the viewport with no horizontal scroll', async () => {
+test('320px: panel fits the viewport with no horizontal scroll; its sentence text (note, starter questions) is 16px', async () => {
   const { ctx, page } = await open({ viewport: { width: 320, height: 640 } });
   await page.goto(live.url + '/');
   await page.click('[data-chat-launcher]');
   assert.ok((await page.evaluate(() => document.documentElement.scrollWidth)) <= 320);
   const box = await page.locator('[role=dialog]').boundingBox();
   assert.ok(box.x >= 0 && box.x + box.width <= 320, JSON.stringify(box));
+  const text = await page.evaluate(() => [...document.querySelectorAll('.ws-chat-note, .ws-chat-starters .ws-btn')].map((e) => {
+    const r = e.getBoundingClientRect();
+    return { what: e.className + ' ' + e.textContent.trim().slice(0, 24), size: parseFloat(getComputedStyle(e).fontSize), l: r.left, r: r.right, fits: e.scrollWidth <= e.clientWidth };
+  }));
+  assert.ok(text.length >= 2, 'note and starter questions present');
+  for (const t of text) {
+    assert.ok(t.size >= 16, `${t.what}: ${t.size}px`);
+    assert.ok(t.l >= box.x && t.r <= box.x + box.width && t.fits, `${t.what} fits the panel`);
+  }
   await ctx.close();
 });
 

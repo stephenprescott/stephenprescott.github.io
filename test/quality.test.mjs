@@ -83,6 +83,67 @@ test('chat panel open on /projects/ (dark shell): dark and readable, axe finds n
   }
 });
 
+// Printing a shell page: dark text on white, no nav, skip link, chat or scene. On / the hero is laid out as plain flow
+// again, so the headline, every hero project, the figures, the areas, the work list and the contact links all print.
+test('print: / and a case study print dark text on white, without the nav, skip link, chat launcher or scene', async () => {
+  const live = await serve(await build('development', { chatEndpoint: 'https://chat.test/ask' }));
+  try {
+    for (const p of ['/', '/projects/data-central/']) {
+      const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+      const page = await ctx.newPage();
+      await page.goto(live.url + p);
+      await page.waitForSelector('[data-chat-launcher]', { state: 'attached' });
+      if (p === '/') await page.waitForFunction(() => document.documentElement.classList.contains('lp-scene-on') && document.querySelector('#expertise[data-selected]'), null, { timeout: 30000 });
+      await page.emulateMedia({ media: 'print' });
+      const r = await page.evaluate((home) => {
+        const cs = (e) => getComputedStyle(e);
+        const rgb = (c) => (c.match(/[\d.]+/g) || []).map(Number);
+        const dark = (c) => { const [r, g, b, a = 1] = rgb(c); return a >= 0.9 && Math.max(r, g, b) <= 80; };
+        const opacity = (e) => { let o = 1; for (let n = e; n && n.nodeType === 1; n = n.parentElement) o *= +cs(n).opacity; return o; };
+        const shown = (e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && cs(e).visibility !== 'hidden' && opacity(e) >= 0.9; };
+        const gone = (sel) => [...document.querySelectorAll(sel)].every((e) => cs(e).display === 'none' || !e.getClientRects().length);
+        const body = cs(document.body), before = getComputedStyle(document.body, '::before');
+        // every rendered element with text of its own
+        const texts = [...document.body.querySelectorAll('*')].filter((e) => !e.closest('.sr, script, style, [hidden]')
+          && [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()) && e.getClientRects().length);
+        const out = {
+          body: body.color, bg: body.backgroundColor, bgImage: body.backgroundImage,
+          before: before.display === 'none' || before.content === 'none' || before.backgroundImage === 'none',
+          gone: ['.sh-nav', '.sh-skip', '[data-chat-launcher]', '[data-chat-panel]', '#lp-scene', '.lp-bg'].filter((s) => !gone(s)),
+          light: texts.filter((e) => !dark(cs(e).color)).map((e) => e.className + ': ' + cs(e).color + ' ' + e.textContent.trim().slice(0, 30)),
+          missing: [],
+        };
+        if (home) {
+          for (const [sel, n] of Object.entries(home)) {
+            const els = [...document.querySelectorAll(sel)];
+            if (els.length < n || !els.every((e) => shown(e) && dark(cs(e).color))) out.missing.push(sel + ' ×' + els.length);
+          }
+          const h = document.querySelector('.lp-headline').getBoundingClientRect();
+          out.overlaps = [...document.querySelectorAll('.lp-projects .lp-proj-t, .lp-cta')].filter((e) => {
+            const b = e.getBoundingClientRect(); return Math.min(b.right, h.right) > Math.max(b.left, h.left) && Math.min(b.bottom, h.bottom) > Math.max(b.top, h.top);
+          }).length;
+        }
+        return out;
+      }, p === '/' && {
+        '.lp-eyebrow': 1, '.lp-headline': 1, '.lp-lede': 1, '.lp-projects > li .lp-proj-t': landing.projects.length,
+        '.lp-projects > li .lp-proj-e': landing.projects.filter((x) => x.subtitle || x.status).length,
+        '#results .lp-stat': landing.figures.length, '#expertise .lp-node .nl': landing.areas.length,
+        '#work li[data-slug]': landing.projects.length, '#contact .lp-c-link': 2,
+      });
+      assert.equal(r.body, 'rgb(0, 0, 0)', p + ' body text');
+      assert.ok(['rgb(255, 255, 255)', 'rgba(0, 0, 0, 0)'].includes(r.bg) && r.bgImage === 'none', `${p} background ${r.bg} ${r.bgImage}`);
+      assert.ok(r.before, p + ' no background gradient');
+      assert.deepEqual(r.gone, [], p + ' hidden in print');
+      assert.deepEqual(r.light, [], p + ' text that is not dark');
+      assert.deepEqual(r.missing, [], p + ' content not shown');
+      if (p === '/') assert.equal(r.overlaps, 0, 'nothing on top of the headline');
+      await ctx.close();
+    }
+  } finally {
+    await live.close();
+  }
+});
+
 test('320px wide: no horizontal page scroll on any page', async () => {
   const ctx = await browser.newContext({ viewport: { width: 320, height: 800 } });
   for (const p of PAGES) {
