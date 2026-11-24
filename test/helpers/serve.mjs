@@ -8,7 +8,8 @@ const types = {
   '.txt': 'text/plain', '.webmanifest': 'application/manifest+json',
 };
 
-/** Serve a built site directory on a random port; returns { url, close }. */
+/** Serve a built site directory on a random port; returns { url, close }. close() drops open keep-alive connections,
+    so a test that fails before closing its browser context does not hang the run. */
 export async function serve(dir) {
   const server = createServer(async (req, res) => {
     let p = normalize(decodeURIComponent(new URL(req.url, 'http://x').pathname));
@@ -29,5 +30,5 @@ export async function serve(dir) {
     }
   });
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
-  return { url: `http://127.0.0.1:${server.address().port}`, close: () => new Promise((r) => server.close(r)) };
+  return { url: `http://127.0.0.1:${server.address().port}`, close: () => new Promise((r) => { server.close(r); server.closeAllConnections(); }) };
 }

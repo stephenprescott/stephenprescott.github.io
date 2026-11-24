@@ -3,8 +3,9 @@
    script 1); the maths, constants and drawing order are the mockup's. Changes from the mockup: projects come from
    #lp-data and the existing server-rendered links (ul.lp-projects) are placed on the arc; the nebula is locked
    (Haze, Cyan, cloud scale 1, area 1, strength .6); the arc shows as many projects as fit, then "+N more below";
-   one animation loop for the scene and the starfield, paused off-screen and in hidden tabs; reduced motion draws one
-   still frame; on any error the scene removes itself (logged once) and the no-JavaScript hero stays.
+   the scene's loop pauses off-screen while the starfield keeps twinkling (as in the mockup), and a hidden tab stops
+   both; reduced motion draws one still frame; on any error the scene removes itself (logged once) and the
+   no-JavaScript hero stays.
    html.lp-scene-on is set only while the scene is laid out and drawn. Exposes window.HeroScene (test hooks). */
 (function () {
   'use strict';
@@ -1212,9 +1213,10 @@
     }
   }
 
-  /* ============ one animation loop for the scene and the starfield ============
-     It runs only while motion is allowed, the hero is in view and the tab is visible. While it is stopped, scrolling
-     repaints the starfield once per frame (still), so its parallax follows the page. */
+  /* ============ the animation loops ============
+     The hero loop (scene and starfield) runs only while motion is allowed, the hero is in view and the tab is visible.
+     While it is stopped, the cheap starfield loop keeps the stars twinkling below the hero, unless motion is reduced or
+     the tab is hidden; with neither running, scrolling repaints the starfield once per frame (still) for its parallax. */
   var loops = 0;
   function frame(now) {
     F.raf = 0;
@@ -1225,17 +1227,35 @@
     if (F.run) F.raf = requestAnimationFrame(frame);
   }
   function startLoop() {
-    if (F.run || dead || paused || !F.inView || document.hidden || !F.core) return;
-    F.run = true; loops++; F.last = performance.now(); F.raf = requestAnimationFrame(frame);
+    if (!(F.run || dead || paused || !F.inView || document.hidden || !F.core)) {
+      F.run = true; loops++; F.last = performance.now(); F.raf = requestAnimationFrame(frame);
+    }
+    syncStars();
   }
   function stopLoop() {
-    if (!F.run) return;
-    F.run = false; loops--;
-    if (F.raf) cancelAnimationFrame(F.raf);
-    F.raf = 0;
+    if (F.run) {
+      F.run = false; loops--;
+      if (F.raf) cancelAnimationFrame(F.raf);
+      F.raf = 0;
+    }
+    syncStars();
+  }
+  /* the starfield on its own, for while the hero loop is stopped */
+  var SF = { run: false, raf: 0 };
+  function starFrame(now) {
+    SF.raf = 0;
+    try { paintBg(now, false); } catch (e) { fail(e); return; }
+    if (SF.run) SF.raf = requestAnimationFrame(starFrame);
+  }
+  function syncStars() {
+    var want = !dead && !paused && !document.hidden && !F.run && !!bgCtx;
+    if (want === SF.run) return;
+    SF.run = want;
+    if (want) SF.raf = requestAnimationFrame(starFrame);
+    else { if (SF.raf) cancelAnimationFrame(SF.raf); SF.raf = 0; }
   }
   function bgStill() {
-    if (bgRaf || F.run || dead) return;
+    if (bgRaf || F.run || SF.run || dead) return;
     bgRaf = requestAnimationFrame(guard(function () { bgRaf = 0; if (!F.run) paintBg(0, true); }));
   }
   /* motion follows prefers-reduced-motion only: a still, complete frame when reduced (sparkles in place, no comet) */
@@ -1480,7 +1500,7 @@
   window.HeroScene = {
     state: function () {
       var top = scene ? scene.getBoundingClientRect().top + window.scrollY : 0;
-      return { running: F.run, loops: loops, shown: dead ? 0 : shown, total: total, comets: F.comets,
+      return { running: F.run, loops: loops, stars: F.run || SF.run, shown: dead ? 0 : shown, total: total, comets: F.comets,
         diskBottom: F.core ? top + F.core.y + F.diskBot : 0, failed: dead, layoutWidth: lastW };
     },
     cometNow: function () { if (!dead && !paused && F.streams.length) { spawnComet(); F.nextC = 8 + Math.random() * 4; } },

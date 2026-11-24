@@ -80,8 +80,8 @@ html.lp-scene-on .lp-hero{margin-top:-60px;padding-top:0}
 .lp-scene-on .lp-compact .lp-cst-card{display:block;width:min(124px,100%);height:auto;aspect-ratio:1;overflow:visible}
 .lp-scene-on .lp-compact .lp-proj-t i{margin-left:.25em;opacity:1;transform:none}
 
-/* when the hero shows fewer projects than there are, a quiet pointer to the full list (in the gap above the chat) */
-.lp-more-note{position:relative;z-index:3;height:44px;margin:20px 0 -64px;text-align:center}
+/* when the hero shows fewer projects than there are, a quiet pointer to the full list, just under the projects */
+.lp-more-note{position:relative;z-index:3;height:44px;margin:8px 0 0;text-align:center}
 .lp-more-below{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:999px;font:500 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--tert);transition:color .25s}
 .lp-more-below:hover,.lp-more-below:focus-visible{color:var(--ink)}
 
@@ -106,19 +106,12 @@ html.lp-scene-on .lp-hero{margin-top:-60px;padding-top:0}
 @keyframes lp-star-in{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
 @keyframes lp-halo{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* hero chat: the existing inline form until the hero chat box replaces it */
-.lp-chat{width:min(640px,calc(100% - 32px));margin:72px auto 0}
-.lp-chat .ws-chat-inline{margin:0 auto}
-:is(.lp-chat,.ws-chat) .ws-input{min-width:0;min-height:44px;padding:0 18px;border:1px solid var(--soft);border-radius:999px;background:rgba(8,11,16,.6);color:var(--ink);font:400 16px var(--sans)}
-:is(.lp-chat,.ws-chat) .ws-input::placeholder{color:var(--tert);opacity:1}
-:is(.lp-chat,.ws-chat) .ws-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border:0;border-radius:999px;background:rgba(216,222,233,.07);color:var(--ink);font:500 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background-color .25s,color .25s}
-:is(.lp-chat,.ws-chat) .ws-btn:hover{background:rgba(255,138,92,.14);color:var(--accent)}
-.ws-chat .ws-btn-primary,.ws-chat .ws-btn-primary:hover{background:var(--accent);color:#0d1117}
-
 /* ---------- lower half: one editorial grid per section ---------- */
 .lp-wrap{width:min(1200px,calc(100% - 2 * var(--gutter)));margin-inline:auto}
 .lp-sec{padding:128px 0 0}
-.lp-lower > .lp-sec:first-child{padding-top:96px}
+/* the first section sits close under the hero's projects: about 96px below the lowest label on the arc, 64px below the
+   phone cards (the arc stage itself ends a little under its lowest label) */
+.lp-lower > .lp-sec:first-child{padding-top:72px}
 /* the numbers strip is short, so the next section sits closer to it */
 #results + .lp-sec{padding-top:56px}
 .lp-mod{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:48px 64px;padding-top:28px;border-top:1px solid var(--rule)}
@@ -372,6 +365,7 @@ button.lp-pr:hover .arr,button.lp-pr:focus-visible .arr{color:var(--accent);tran
   .lp-projects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 16px;max-width:680px}
   .lp-projects > li{width:auto}
   .lp-sec{padding-top:80px}
+  .lp-lower > .lp-sec:first-child{padding-top:64px}
   .lp-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .lp-area > :not(h3){margin-left:0}
   .lp-area-t,.lp-row{grid-template-columns:28px minmax(0,1fr);gap:12px}

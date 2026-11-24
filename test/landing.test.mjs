@@ -116,12 +116,11 @@ test('work: one row per project with heading, summary and case-study link', asyn
   assert.equal(text($('#contact h2')), "Let's talk.");
 });
 
-test('#lp-data holds the landing data, starters and chat flag as JSON', async () => {
+test('#lp-data holds the landing data as JSON, and nothing for a hero chat', async () => {
   const $ = await page();
   const json = JSON.parse($('script#lp-data[type="application/json"]').html());
+  assert.deepEqual(Object.keys(json).sort(), ['areas', 'figures', 'projects']);
   for (const k of ['areas', 'figures', 'projects']) assert.deepEqual(json[k], landing[k], k);
-  assert.equal(json.hasChat, false);
-  assert.ok(Array.isArray(json.starters));
 });
 
 test('data is escaped: HTML in titles renders as text and every "<" in the JSON script is escaped', () => {
@@ -164,19 +163,29 @@ test('a sixth project with a 60-character unbroken title renders in the hero and
   assert.ok(text($('ol.lp-work li[data-slug="long-one"]')).includes(long));
 });
 
-test('chat: no endpoint renders no hero chat form and no Ask button; an endpoint renders both', () => {
+test('chat: no endpoint renders no Ask button; an endpoint renders the hero Ask button and no hero chat box', () => {
   const off = render();
-  assert.equal(off('.lp-chat form').length, 0);
   assert.equal(off('[data-chat-open]').length, 0);
   const on = render({ chatEndpoint: 'https://chat.example/ask' });
   const ask = on('#top button[data-chat-open]');
   assert.equal(ask.length, 1);
   assert.notEqual(ask.attr('hidden'), undefined);
   assert.equal(text(ask), 'Ask my AI');
-  assert.equal(on('.lp-chat form[data-chat-inline]').length, 1);
-  const json = JSON.parse(on('#lp-data').html());
-  assert.equal(json.hasChat, true);
-  assert.deepEqual(json.starters, chat.starters);
+  for (const $ of [off, on]) {
+    assert.equal($('.lp-chat, [data-chat-inline], [data-chat-starter]').length, 0);
+    assert.deepEqual(Object.keys(JSON.parse($('#lp-data').html())).sort(), ['areas', 'figures', 'projects']);
+  }
+});
+
+test('built / with a chat endpoint: no hero chat box; the floating launcher and the shell chat styles are there', async () => {
+  const $ = cheerio.load(readFileSync(join(await build('development', { chatEndpoint: 'https://chat.example/ask' }), 'index.html'), 'utf8'));
+  assert.equal($('.lp-chat, [data-chat-inline], [data-chat-starter]').length, 0);
+  assert.equal($('#top button[data-chat-open]').length, 1);
+  assert.equal($('.ws-chat-launcher[data-chat-launcher]').length, 1);
+  assert.equal($('#ws-chat-panel').length, 1);
+  const css = $('link[rel=stylesheet]').map((_, l) => l.attribs.href).get();
+  assert.ok(css.indexOf('/assets/css/chat-shell.css') > css.indexOf('/assets/css/chat.css'), css.join(' '));
+  assert.ok(css.indexOf('/assets/css/chat.css') > -1);
 });
 
 test('assertNoPlaceholders is silent without placeholders and names every placeholder path', () => {

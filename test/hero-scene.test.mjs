@@ -263,9 +263,11 @@ test('resize 1440 → 900 → 390 → 1440 ends with one running loop and a vali
     await setHidden(true);
     assert.equal((await state(page)).running, false);
     assert.equal((await state(page)).loops, 0);
+    assert.equal((await state(page)).stars, false, 'hidden tab stops the starfield');
     await setHidden(false);
     assert.equal((await state(page)).running, true);
     assert.equal((await state(page)).loops, 1);
+    assert.equal((await state(page)).stars, true);
     assert.deepEqual(errors, []);
   });
 });
@@ -288,5 +290,71 @@ test('same-origin requests only, and no console errors at 1440, 1024 and 390', a
       assert.deepEqual(errors, [], `console at ${viewport.width}`);
     });
     assert.deepEqual(foreign, [], `requests at ${viewport.width}`);
+  }
+});
+
+// The page's fixed starfield keeps twinkling below the hero (as in the mockup), while the hero drawing pauses.
+const bgPixels = (page) => page.evaluate(() => {
+  const c = document.querySelector('canvas.lp-bg');
+  return Array.from(c.getContext('2d').getImageData(0, 0, c.width, c.height).data).join(',');
+});
+const offHero = async (page) => {
+  await page.evaluate(() => document.getElementById('contact').scrollIntoView());
+  await page.waitForFunction(() => !window.HeroScene.state().running, null, { timeout: 5000 });
+  await page.waitForTimeout(300);
+};
+
+test('below the hero the starfield keeps twinkling while the hero loop is paused', async () => {
+  await withPage({}, async (page, errors) => {
+    await offHero(page);
+    const s = await state(page);
+    assert.equal(s.running, false);
+    assert.equal(s.loops, 0, 'hero loop paused');
+    assert.equal(s.stars, true, 'starfield animating');
+    const a = await bgPixels(page);
+    await page.waitForTimeout(600);
+    const b = await bgPixels(page);
+    assert.notEqual(a, b, 'star pixels changed in 600ms');
+    assert.deepEqual(errors, []);
+  });
+});
+
+test('reduced motion: the starfield stays still below the hero too', async () => {
+  await withPage({ reducedMotion: 'reduce' }, async (page) => {
+    await offHero(page);
+    const s = await state(page);
+    assert.equal(s.stars, false);
+    assert.equal(s.loops, 0);
+    const a = await bgPixels(page);
+    await page.waitForTimeout(600);
+    assert.equal(await bgPixels(page), a, 'identical 600ms apart');
+  });
+});
+
+// Gap from the lowest visible hero project element (label, "+N more below", or the phone card grid) to the Results rule.
+const heroGap = (page) => page.evaluate(() => {
+  const shown = (e) => e.getClientRects().length > 0;
+  const els = [...document.querySelectorAll('.lp-projects > li:not(.lp-off), .lp-projects > li:not(.lp-off) .lp-proj-t, .lp-projects > li:not(.lp-off) .lp-proj-e, a.lp-more-below')].filter(shown);
+  const low = Math.max(...els.map((e) => e.getBoundingClientRect().bottom));
+  return document.querySelector('#results .lp-mod').getBoundingClientRect().top - low;
+});
+
+for (const [viewport, min, max] of [[DESK, 88, 104], [{ width: 1280, height: 800 }, 88, 104], [PHONE, 56, 72]]) {
+  test(`${viewport.width}×${viewport.height}: the Results rule sits ${min}–${max}px below the hero projects`, async () => {
+    await withPage({ viewport }, async (page) => {
+      await page.waitForTimeout(300);
+      const gap = await heroGap(page);
+      assert.ok(gap >= min && gap <= max, `gap ${gap}`);
+    });
+  });
+}
+
+test('12 projects: the hero projects and "+N more below" stay clear of the Results section at 1440 and 390', async () => {
+  for (const viewport of [DESK, PHONE]) {
+    await withPage({ setup: withExtra(7), viewport }, async (page) => {
+      await page.waitForTimeout(300);
+      const gap = await heroGap(page);
+      assert.ok(gap >= 24, `${viewport.width}: gap ${gap}`);
+    });
   }
 });

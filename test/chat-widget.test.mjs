@@ -97,22 +97,20 @@ test('model output is rendered as text, never HTML', async () => {
   await ctx.close();
 });
 
-test('hero Ask button and inline form open the panel and send', async () => {
+test('no hero chat box on /: the floating launcher shows, and the hero Ask button opens the panel with its input focused', async () => {
   const { ctx, page } = await open();
   const bodies = await fakeWorker(page);
   await page.goto(live.url + '/');
-  assert.equal(await page.locator('[data-chat-open]').isVisible(), true);
-  assert.equal(await page.locator('form[data-chat-inline]').isVisible(), true);
-  await page.click('[data-chat-open]');
-  assert.equal(await page.locator('[role=dialog]').isVisible(), true);
-  await page.keyboard.press('Escape');
-  assert.equal(await page.locator('[role=dialog]').isVisible(), false);
-  await page.fill('form[data-chat-inline] input', 'What do you do?');
+  assert.equal(await page.locator('.lp-chat, [data-chat-inline], [data-chat-starter]').count(), 0);
+  assert.equal(await page.locator('.ws-chat-launcher').isVisible(), true);
+  assert.equal(await page.locator('button[data-chat-open]').isVisible(), true);
+  await page.click('button[data-chat-open]');
+  assert.equal(await page.locator('#ws-chat-panel').isVisible(), true);
+  assert.equal(await page.evaluate(() => document.activeElement === document.querySelector('#ws-chat-panel [data-chat-input]')), true);
+  await page.keyboard.type('What do you do?');
   await page.keyboard.press('Enter');
   await page.waitForSelector('[role=log] >> text=Ten years');
-  assert.equal(await page.locator('[role=dialog]').isVisible(), true);
   assert.equal(bodies[0].question, 'What do you do?');
-  assert.equal(await page.inputValue('form[data-chat-inline] input'), '');
   await ctx.close();
 });
 
@@ -223,7 +221,7 @@ test('no chat UI or AI-provider notice text in the page', async () => {
   const { ctx, page } = await open();
   await page.goto(live.url + '/');
   await page.click('[data-chat-launcher]');
-  const text = await page.evaluate(() => document.querySelector('[data-chat]').textContent + document.querySelector('form[data-chat-inline]').textContent);
+  const text = await page.evaluate(() => document.querySelector('[data-chat]').textContent);
   assert.doesNotMatch(text, /Gemini|Gemma|Google|Anthropic|Claude|Cloudflare|Workers AI|improve .* products/i);
   await ctx.close();
 });
@@ -255,7 +253,6 @@ test('JavaScript off: no chat UI visible, contact section reachable', async () =
   await page.goto(live.url + '/');
   assert.equal(await page.locator('[data-chat-launcher]').isVisible(), false);
   assert.equal(await page.locator('[role=dialog]').isVisible(), false);
-  assert.equal(await page.locator('form[data-chat-inline]').isVisible(), false);
   assert.equal(await page.locator('[data-chat-open]').isVisible(), false);
   assert.equal(await page.locator('#contact').isVisible(), true);
   await ctx.close();
@@ -283,8 +280,9 @@ for (const vp of [{ width: 1280, height: 800 }, { width: 320, height: 640 }]) {
   test(`${vp.width}px: Send, Close and hero Ask labels stay on one line`, async () => {
     const { ctx, page } = await open({ viewport: vp });
     await page.goto(live.url + '/');
-    await page.waitForSelector('form[data-chat-inline] button', { state: 'visible' });
-    assert.equal(await lineCount(page, 'form[data-chat-inline] button'), 1, 'inline Ask');
+    await page.waitForSelector('button[data-chat-open]', { state: 'visible' });
+    assert.equal(await lineCount(page, 'button[data-chat-open]'), 1, 'hero Ask');
+    assert.equal(await lineCount(page, '[data-chat-launcher]'), 1, 'launcher');
     await page.click('[data-chat-launcher]');
     for (const sel of ['[data-chat-send]', '[data-chat-close]']) {
       assert.equal(await lineCount(page, sel), 1, sel);
@@ -401,3 +399,84 @@ test('conversation log is keyboard-focusable and the launcher controls the panel
   assert.equal(await page.getAttribute(`#${id}`, 'role'), 'dialog');
   await ctx.close();
 });
+
+// The dark restyle (chat-shell.css) on the shell: Space Grotesk, borderless pills, a pill launcher clear of the text.
+for (const path of ['/', '/projects/']) test(`shell chat restyle on ${path}: Space Grotesk, palette colours, borderless pill buttons, a soft pill input`, async () => {
+  const { ctx, page } = await open();
+  await page.goto(live.url + path);
+  await page.waitForSelector('[data-chat-launcher]', { state: 'visible' });
+  // read before the click: afterwards the pointer rests on the launcher and it shows its hover colour
+  const launcherBg = await page.$eval('[data-chat-launcher]', (el) => getComputedStyle(el).backgroundColor);
+  await page.click('[data-chat-launcher]');
+  const s = await page.evaluate(() => {
+    const g = (sel) => getComputedStyle(document.querySelector(sel));
+    const launcher = g('[data-chat-launcher]'), send = g('[data-chat-send]'), close = g('[data-chat-close]'), input = g('[data-chat-input]'), panel = g('#ws-chat-panel'), title = g('.ws-chat-title');
+    return {
+      title: title.fontFamily, input: input.fontFamily, sendFont: send.fontFamily,
+      panelBg: panel.backgroundColor, panelInk: panel.color,
+      sendBorder: send.borderTopWidth, closeBorder: close.borderTopWidth, launcherBorder: launcher.borderTopWidth,
+      sendBg: send.backgroundColor,
+      radii: [launcher, send, close, input].map((x) => parseFloat(x.borderTopLeftRadius)),
+      inputBorder: input.borderTopColor,
+    };
+  });
+  assert.match(s.title, /^"?Space Grotesk/);
+  assert.match(s.input, /^"?Space Grotesk/);
+  assert.match(s.sendFont, /^"?Space Grotesk/);
+  assert.equal(s.panelBg, 'rgb(13, 17, 23)');
+  assert.equal(s.panelInk, 'rgb(216, 222, 233)');
+  assert.deepEqual([s.sendBorder, s.closeBorder, s.launcherBorder], ['0px', '0px', '0px']);
+  assert.equal(s.sendBg, 'rgb(255, 138, 92)');
+  assert.equal(launcherBg, 'rgb(255, 138, 92)');
+  for (const r of s.radii) assert.ok(r >= 22, `pill radius ${r}`);
+  // a barely visible border on the input: low alpha
+  const alpha = Number((s.inputBorder.match(/rgba\([^)]*,\s*([\d.]+)\)/) || [])[1]);
+  assert.ok(alpha > 0 && alpha <= 0.2, `input border ${s.inputBorder}`);
+  await ctx.close();
+});
+
+for (const vp of [{ width: 1440, height: 900 }, { width: 1280, height: 800 }, { width: 390, height: 844 }]) {
+  test(`${vp.width}px: the launcher pill covers no hero text on load and no footer text at the bottom of the page`, async () => {
+    const { ctx, page } = await open({ viewport: vp });
+    await page.goto(live.url + '/');
+    await page.waitForFunction(() => document.documentElement.classList.contains('lp-scene-on'), null, { timeout: 30000 });
+    await page.waitForSelector('[data-chat-launcher]', { state: 'visible' });
+    const covered = (sel) => page.evaluate((s) => {
+      const l = document.querySelector('[data-chat-launcher]').getBoundingClientRect();
+      const out = [];
+      for (const e of document.querySelectorAll(s)) {
+        const w = document.createTreeWalker(e, NodeFilter.SHOW_TEXT);
+        for (let n = w.nextNode(); n; n = w.nextNode()) {
+          if (!n.textContent.trim()) continue;
+          const r = document.createRange();
+          r.selectNodeContents(n);
+          for (const b of r.getClientRects()) {
+            if (b.width && Math.min(b.right, l.right) > Math.max(b.left, l.left) && Math.min(b.bottom, l.bottom) > Math.max(b.top, l.top)) out.push(n.textContent.trim());
+          }
+        }
+      }
+      return out;
+    }, sel);
+    assert.deepEqual(await covered('.lp-text, .lp-projects > li:not(.lp-off), .lp-more-note'), [], 'hero');
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await page.waitForTimeout(100);
+    assert.deepEqual(await covered('.sh-foot'), [], 'footer');
+    await ctx.close();
+  });
+}
+
+// /resume/ keeps its own chat panel: values captured before the shell restyle (Task 7).
+for (const [theme, bg] of [['light', 'rgb(216, 222, 233)'], ['dark', 'rgb(13, 17, 23)']]) {
+  test(`/resume/ chat panel unchanged in ${theme} theme`, async () => {
+    const { ctx, page } = await open();
+    await ctx.addInitScript((t) => localStorage.setItem('ws-theme', t), theme);
+    await page.goto(live.url + '/resume/');
+    await page.click('[data-chat-launcher]');
+    const s = await page.evaluate(() => {
+      const g = (sel) => getComputedStyle(document.querySelector(sel));
+      return { bg: g('.ws-chat-panel').backgroundColor, font: g('.ws-chat-panel').fontFamily, launcherRadius: g('.ws-chat-launcher').borderTopLeftRadius, sendRadius: g('[data-chat-send]').borderTopLeftRadius };
+    });
+    assert.deepEqual(s, { bg, font: 'Georgia, Gelasio, serif', launcherRadius: '4px', sendRadius: '4px' });
+    await ctx.close();
+  });
+}

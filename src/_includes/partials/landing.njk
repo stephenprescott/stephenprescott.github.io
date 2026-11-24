@@ -1,7 +1,6 @@
 {#- The landing page. Complete without JavaScript: every list is server-rendered from `landing`
     (lib/landing-data.mjs). Scripts enhance this markup through the ids and data- hooks below. -#}
 {% from "components/project-glyph.njk" import projectGlyph -%}
-{% from "components/chat.njk" import chatInline -%}
 {% from "components/contact-form.njk" import contactForm -%}
 
 {#- "Title" + accent word -> "Ti<span class=acc>tle</span>." -#}
@@ -32,7 +31,6 @@
 {% for p in landing.projects %}{% set inner %}{{ projectGlyph(p.slug) }}<span class="lp-proj-t">{{ p.shortTitle }}{% if p.href %}<i aria-hidden="true"> →</i>{% endif %}</span>{% if p.subtitle or p.status %}<span class="lp-proj-e">{{ p.subtitle or p.status }}</span>{% endif %}{% endset -%}
 <li data-slug="{{ p.slug }}">{% if p.href %}<a class="lp-proj" href="{{ p.href }}">{{ inner | safe }}</a>{% else %}<span class="lp-proj">{{ inner | safe }}</span>{% endif %}</li>
 {% endfor %}</ul>{% endif %}
-{% if chatEndpoint %}<div class="lp-chat">{{ chatInline() }}</div>{% endif %}
 </section>
 
 <div class="lp-lower">
@@ -91,4 +89,4 @@
 </div></section>
 </div>
 
-<script type="application/json" id="lp-data">{{ { areas: landing.areas, figures: landing.figures, projects: landing.projects, starters: ((chat.starters or []) if chatEndpoint else []), hasChat: not not chatEndpoint } | dump | replace("<", "\\u003c") | safe }}</script>
+<script type="application/json" id="lp-data">{{ { areas: landing.areas, figures: landing.figures, projects: landing.projects } | dump | replace("<", "\\u003c") | safe }}</script>

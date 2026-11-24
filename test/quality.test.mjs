@@ -72,7 +72,7 @@ test('chat panel open on /projects/ (dark shell): dark and readable, axe finds n
     const panel = await page.$eval('[role=dialog]', (el) => { const s = getComputedStyle(el); return { bg: s.backgroundColor, fg: s.color, border: s.borderTopColor, font: s.fontFamily }; });
     assert.equal(panel.bg, 'rgb(13, 17, 23)');
     assert.equal(panel.fg, 'rgb(216, 222, 233)');
-    assert.equal(panel.border, 'rgb(122, 134, 153)', 'border colour resolves');
+    assert.equal(panel.border, 'rgba(154, 167, 187, 0.16)', 'soft border from chat-shell.css');
     assert.match(panel.font, /Space Grotesk/);
     const { violations } = await new AxeBuilder({ page }).analyze();
     const bad = violations.filter((v) => ['serious', 'critical'].includes(v.impact));
@@ -213,9 +213,11 @@ test('chat widget open: axe finds no serious or critical violations on / (dark o
     await page.goto(live.url + '/');
     await page.click('[data-chat-launcher]');
     assert.equal(await page.locator('[role=dialog]').isVisible(), true);
-    // the landing page loads no bundle.css, so the panel's design-system properties come from shell-content.css
+    // the landing page loads no bundle.css: the panel is styled by chat.css (via shell-content.css) and chat-shell.css
     const panel = await page.$eval('[role=dialog]', (el) => { const s = getComputedStyle(el); return { bg: s.backgroundColor, border: s.borderTopColor, pad: s.paddingTop }; });
-    assert.deepEqual(panel, { bg: 'rgb(13, 17, 23)', border: 'rgb(122, 134, 153)', pad: '32px' });
+    assert.deepEqual(panel, { bg: 'rgb(13, 17, 23)', border: 'rgba(154, 167, 187, 0.16)', pad: '24px' });
+    assert.match(await page.$eval('.ws-chat-title', (el) => getComputedStyle(el).fontFamily), /^"?Space Grotesk/);
+    assert.equal(await page.$eval('[data-chat-send]', (el) => getComputedStyle(el).borderTopWidth), '0px');
     await settleReveals(page);
     const { violations } = await new AxeBuilder({ page }).analyze();
     const bad = violations.filter((v) => ['serious', 'critical'].includes(v.impact));
