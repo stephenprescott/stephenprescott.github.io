@@ -84,10 +84,12 @@ test('375px: nav, footer, breadcrumb and mailto links meet the 44px touch target
   const lacking = [];
   for (const [path, sels] of [
     ['/', ['.ws-nav-brand', '.ws-nav .ws-link', '.ws-footer .ws-link']],
-    ['/projects/data-central/', ['.ws-crumbs .ws-link']],
+    ['/projects/', ['.sh-brand', '.sh-menu-btn', '.sh-res', '.sh-foot-links a', '.sh-links a']],
+    ['/projects/data-central/', ['.sh-brand', '.sh-foot-links a', '.ws-crumbs .ws-link']],
   ]) {
     const page = await ctx.newPage();
     await page.goto(server.url + path);
+    if (sels.includes('.sh-links a')) await page.click('.sh-menu-btn'); // the collapsed menu's links
     for (const sel of sels) {
       const heights = await page.$$eval(sel, (els) => els.filter((e) => e.offsetParent).map((e) => e.getBoundingClientRect().height));
       assert.ok(heights.length > 0, `${path} ${sel} not found`);

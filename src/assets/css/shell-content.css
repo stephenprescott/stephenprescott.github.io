@@ -1,0 +1,27 @@
+/* Content pages on the dark shell: project list, case studies, 404.
+   Re-maps the design-system custom properties read by bundle.css, site.css and chat.css
+   onto the shell palette, so those components render dark without being edited.
+   Dark only: there are no light values. Load after shell.css, bundle.css and site.css. */
+.sh-root{
+  /* colour */
+  --primary:#0d1117; --secondary:#d8dee9;
+  --tertiary:#7a8699; --tertiary-text:#7a8699;
+  --slate-300:#9aa7bb; --slate-500:#5a6577;
+  /* --ground --ink --muted --accent come from shell.css and match the design-system dark values */
+  /* spacing, radius, borders, sizes */
+  --space-3xs:.25rem; --space-2xs:.5rem; --space-xs:.75rem; --space-sm:1rem; --space-md:2rem; --space-lg:4rem;
+  --radius-sm:4px; --radius-md:8px; --radius-lg:16px; --radius-pill:999px; --radius-round:50%;
+  --border-hairline:1px; --border-strong:2px;
+  --size-control:44px; --size-tag:28px; --size-content:1200px;
+  --measure:36em; --measure-wide:44em; --measure-title:16em;
+  /* type: Space Grotesk only; headlines stay at or below 56px */
+  --font-serif:var(--sans); --font-system:var(--sans);
+  --text-eyebrow:12px; --text-xs:.875rem; --text-sm:.9375rem; --text-md:1rem; --text-lg:1.125rem; --text-xl:1.25rem;
+  --text-2xl:1.5rem; --text-3xl:1.75rem; --text-4xl:2.5rem; --text-5xl:3rem;
+  --text-hero:clamp(2.25rem,6vw,3.5rem); --text-jumbo:clamp(5rem,18vw,10rem);
+  --leading-none:1; --leading-tight:1.1; --leading-snug:1.2; --leading-normal:1.4; --leading-relaxed:1.5; --leading-loose:1.6;
+  --tracking-eyebrow:.3em;
+  --duration-fast:150ms; --duration-base:200ms; --duration-slow:700ms;
+}
+/* Page components carry their own .ws-root; let the shell ground show through (the chat panel sits outside main and keeps its panel colour). */
+.sh-root main .ws-root{background:transparent}

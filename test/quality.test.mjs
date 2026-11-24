@@ -12,7 +12,10 @@ import { renderMacro } from './helpers/render.mjs';
 const root = resolve(import.meta.dirname, '..');
 const projects = JSON.parse(readFileSync(join(root, 'src/_data/projects.json'), 'utf8'));
 const home = JSON.parse(readFileSync(join(root, 'src/_data/home.json'), 'utf8'));
-const PAGES = ['/', '/projects/', '/projects/data-central/', '/resume/', '/404.html'];
+// Pages with the light/dark theme toggle, and pages on the dark-only shell.
+const THEMED = ['/', '/resume/'];
+const SHELL = ['/projects/', '/projects/data-central/', '/404.html'];
+const PAGES = [...THEMED, ...SHELL];
 
 let server;
 let browser;
@@ -27,7 +30,7 @@ after(async () => {
 
 for (const theme of ['dark', 'light']) {
   test(`axe: no serious or critical violations in ${theme} theme`, async () => {
-    for (const p of PAGES) {
+    for (const p of THEMED) {
       const ctx = await browser.newContext();
       await ctx.addInitScript((t) => localStorage.setItem('ws-theme', t), theme);
       const page = await ctx.newPage();
@@ -41,6 +44,42 @@ for (const theme of ['dark', 'light']) {
     }
   });
 }
+
+test('axe: no serious or critical violations on the dark shell pages', async () => {
+  for (const p of SHELL) {
+    const ctx = await browser.newContext();
+    const page = await ctx.newPage();
+    await page.goto(server.url + p);
+    assert.equal(await page.evaluate(() => document.body.classList.contains('sh-root')), true, p + ' on the shell');
+    await settleReveals(page);
+    const { violations } = await new AxeBuilder({ page }).analyze();
+    const bad = violations.filter((v) => ['serious', 'critical'].includes(v.impact));
+    assert.deepEqual(bad.map((v) => p + ' ' + v.id + ': ' + v.nodes.map((n) => n.target.join(' ')).join(' | ')), []);
+    await ctx.close();
+  }
+});
+
+test('chat panel open on /projects/ (dark shell): dark and readable, axe finds no serious or critical violations', async () => {
+  const live = await serve(await build('development', { chatEndpoint: 'https://chat.test/ask' }));
+  try {
+    const ctx = await browser.newContext();
+    const page = await ctx.newPage();
+    await page.goto(live.url + '/projects/');
+    await page.click('[data-chat-launcher]');
+    assert.equal(await page.locator('[role=dialog]').isVisible(), true);
+    const panel = await page.$eval('[role=dialog]', (el) => { const s = getComputedStyle(el); return { bg: s.backgroundColor, fg: s.color, border: s.borderTopColor, font: s.fontFamily }; });
+    assert.equal(panel.bg, 'rgb(13, 17, 23)');
+    assert.equal(panel.fg, 'rgb(216, 222, 233)');
+    assert.equal(panel.border, 'rgb(122, 134, 153)', 'border colour resolves');
+    assert.match(panel.font, /Space Grotesk/);
+    const { violations } = await new AxeBuilder({ page }).analyze();
+    const bad = violations.filter((v) => ['serious', 'critical'].includes(v.impact));
+    assert.deepEqual(bad.map((v) => v.id + ': ' + v.nodes.map((n) => n.target.join(' ')).join(' | ')), []);
+    await ctx.close();
+  } finally {
+    await live.close();
+  }
+});
 
 test('320px wide: no horizontal page scroll on any page', async () => {
   const ctx = await browser.newContext({ viewport: { width: 320, height: 800 } });

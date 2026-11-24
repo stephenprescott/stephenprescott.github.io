@@ -29,6 +29,10 @@
 {% endif %}
 <script>document.documentElement.classList.add('js');</script>
 <link rel="stylesheet" href="/assets/css/shell.css">
+{% if shellContent %}<link rel="stylesheet" href="/assets/css/bundle.css">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/assets/css/shell-content.css">
+{% endif %}
 {% if chatEndpoint %}<link rel="stylesheet" href="/assets/css/chat.css">
 {% endif %}</head>
 <body class="sh-root">

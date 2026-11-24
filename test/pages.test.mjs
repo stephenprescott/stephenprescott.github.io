@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { build } from './helpers/build.mjs';
+import * as cheerio from 'cheerio';
 import { buildCaseStudies } from '../lib/case-studies.mjs';
 
 const root = resolve(import.meta.dirname, '..');
@@ -14,7 +15,7 @@ test('projects index page has heading, filterable grid and footer', async () => 
   assert.match(html, /ws-grid-wrap/);
   assert.match(html, /class="ws-tags ws-filter" hidden/);
   assert.match(html, /\/assets\/js\/filter\.js/);
-  assert.match(html, /class="ws-root ws-footer"/);
+  assert.match(html, /<footer class="sh-foot">/);
 });
 
 test('case study page: breadcrumbs, header, Problem/Approach/Result, project nav', async () => {
@@ -33,6 +34,33 @@ test('404 page exists with the not-found block', async () => {
   const html = read(await build(), '404.html');
   assert.match(html, /class="ws-404-code"/);
   assert.match(html, /Back to home/);
+});
+
+test('projects index, case study and 404 sit on the dark shell with content styles', async () => {
+  const dir = await build();
+  for (const p of ['projects/index.html', 'projects/data-central/index.html', '404.html']) {
+    const d = cheerio.load(read(dir, p));
+    assert.ok(d('body').hasClass('sh-root'), p + ' body.sh-root');
+    assert.ok(d('html').hasClass('sh'), p + ' html.sh');
+    assert.equal(d('html').attr('data-theme'), undefined, p + ' has no theme attribute');
+    assert.deepEqual(d('nav[aria-label="Main"] a').map((_, a) => d(a).text()).get(), ['Work', 'Expertise', 'Contact'], p + ' shell nav');
+    assert.equal(d('[data-theme-toggle], .ws-icon-btn[aria-label^="Switch"]').length, 0, p + ' no theme toggle');
+    assert.equal(d('link[href="/assets/css/shell.css"]').length, 1, p + ' shell.css');
+    assert.equal(d('link[href="/assets/css/shell-content.css"]').length, 1, p + ' shell-content.css');
+    assert.equal(d('link[href="/assets/css/tokens.css"]').length, 0, p + ' loads no light tokens');
+    assert.equal(d('footer.sh-foot').length, 1, p + ' shell footer');
+  }
+});
+
+test('shell content styles define every custom property the content CSS reads, with no light values', () => {
+  const css = (f) => readFileSync(join(root, 'src/assets/css', f), 'utf8');
+  const content = css('shell-content.css');
+  assert.ok(!/data-theme|prefers-color-scheme:\s*light/.test(content), 'dark only');
+  const defined = new Set([...(css('shell.css') + content).matchAll(/(--[a-z0-9-]+)\s*:/g)].map((m) => m[1]));
+  const used = new Set(['bundle.css', 'site.css', 'chat.css'].flatMap((f) => [...css(f).matchAll(/var\((--[a-z0-9-]+)/g)].map((m) => m[1])));
+  // These are read with fallbacks by the résumé role picker only.
+  const missing = [...used].filter((v) => !defined.has(v) && !['--container-max', '--text-muted', '--border'].includes(v));
+  assert.deepEqual(missing, []);
 });
 
 test('buildCaseStudies makes one page per project with a caseStudy, linked prev/next in order', () => {
