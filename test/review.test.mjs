@@ -26,11 +26,11 @@ after(async () => {
   await server.close();
 });
 
-test('without JavaScript the social links stay visible and only the theme toggle is hidden', async () => {
+test('résumé without JavaScript: footer links stay visible and only the theme toggle is hidden', async () => {
   const ctx = await browser.newContext({ javaScriptEnabled: false });
   const page = await ctx.newPage();
-  await page.goto(server.url + '/');
-  assert.equal(await page.locator('.ws-social a').first().isVisible(), true);
+  await page.goto(server.url + '/resume/');
+  assert.equal(await page.locator('.ws-footer a').first().isVisible(), true);
   assert.equal(await page.locator('.ws-nav button.ws-icon-btn').isVisible(), false);
   await ctx.close();
 });
@@ -83,7 +83,8 @@ test('375px: nav, footer, breadcrumb and mailto links meet the 44px touch target
   const ctx = await browser.newContext({ viewport: { width: 375, height: 800 } });
   const lacking = [];
   for (const [path, sels] of [
-    ['/', ['.ws-nav-brand', '.ws-nav .ws-link', '.ws-footer .ws-link']],
+    ['/resume/', ['.ws-nav-brand', '.ws-nav .ws-link', '.ws-footer .ws-link']],
+    ['/', ['.sh-brand', '.sh-menu-btn', '.sh-res', '.sh-foot-links a', '.sh-links a', '.lp-proj', '.lp-stat', '.lp-pr', '.lp-tlink', '.lp-c-link']],
     ['/projects/', ['.sh-brand', '.sh-menu-btn', '.sh-res', '.sh-foot-links a', '.sh-links a']],
     ['/projects/data-central/', ['.sh-brand', '.sh-foot-links a', '.ws-crumbs .ws-link']],
   ]) {

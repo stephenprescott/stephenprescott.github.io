@@ -31,10 +31,14 @@
 <link rel="stylesheet" href="/assets/css/shell.css">
 {% if shellContent %}<link rel="stylesheet" href="/assets/css/bundle.css">
 <link rel="stylesheet" href="/assets/css/site.css">
-<link rel="stylesheet" href="/assets/css/shell-content.css">
+{% endif %}
+{#- shell-content.css maps the old design-system properties dark; chat.css reads them too. -#}
+{% if shellContent or chatEndpoint %}<link rel="stylesheet" href="/assets/css/shell-content.css">
 {% endif %}
 {% if chatEndpoint %}<link rel="stylesheet" href="/assets/css/chat.css">
-{% endif %}</head>
+{% endif %}
+{% for s in styles %}<link rel="stylesheet" href="{{ s }}">
+{% endfor %}</head>
 <body class="sh-root">
 <a class="sh-skip" href="#main">Skip to content</a>
 {{ shellNav(site) }}

@@ -1,0 +1,187 @@
+/* The landing page (/). Ported from the approved mockup (round-11/full-page.html). Loaded after shell.css
+   and uses its tokens. Everything here reads without JavaScript; the scene and chart scripts enhance it.
+   html.lp-scene-on is set by the scene script once the hero scene is running. */
+.sh-root{--line:#232c3a;--soft:rgba(216,222,233,.12);--hair:rgba(154,167,187,.14)}
+.sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.lp-defs{position:absolute;width:0;height:0;overflow:hidden}
+.acc{color:var(--accent)}
+
+/* ---------- hero ---------- */
+.lp-hero{position:relative;padding:72px 0 0;text-align:center}
+.lp-core-label{display:none}
+.lp-text{position:relative;z-index:3;width:min(580px,calc(100% - 32px));margin:0 auto;text-align:center}
+.lp-text > *{width:fit-content;max-width:100%;margin-left:auto;margin-right:auto}
+.lp-text > *{animation:lp-rise .8s var(--ease) both}
+.lp-text > :nth-child(2){animation-delay:.06s}
+.lp-text > :nth-child(3){animation-delay:.14s}
+.lp-text > :nth-child(4){animation-delay:.22s}
+@keyframes lp-rise{from{opacity:0;transform:translateY(12px)}}
+.lp-eyebrow{margin:0;font:500 12px/1.75 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.lp-eyebrow .l{display:block}
+.lp-headline{margin:.42em 0 .38em;font:500 clamp(1.75rem,.6rem + 2.2vw,2.5rem)/1.15 var(--sans);letter-spacing:-.028em;white-space:nowrap}
+.lp-lede{margin:0 auto;max-width:27em;font-size:clamp(1.02rem,.95rem + .25vw,1.125rem);line-height:1.62;color:var(--ink);opacity:.86;text-wrap:pretty}
+.lp-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:30px}
+.lp-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:0 22px;border:1px solid rgba(154,167,187,.3);border-radius:999px;background:rgba(13,17,23,.55);color:var(--ink);font:500 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:border-color .25s,color .25s,background-color .25s}
+.lp-btn:hover{border-color:var(--accent);color:var(--accent)}
+.lp-btn.primary{background:var(--accent);border-color:var(--accent);color:#0d1117}
+.lp-btn.primary:hover{background:#ffa27e;border-color:#ffa27e;color:#0d1117}
+
+/* projects: a wrapped row of constellations under the buttons (the scene script lays them on the arc) */
+.lp-projects{display:flex;flex-wrap:wrap;justify-content:center;gap:40px 32px;width:min(1080px,calc(100% - 32px));margin:72px auto 0;padding:0;list-style:none}
+.lp-projects > li{width:168px;min-width:0}
+.lp-proj{display:flex;flex-direction:column;align-items:center;padding:4px;border-radius:6px;text-align:center;text-decoration:none;color:inherit}
+.lp-glyph{display:block;width:min(112px,100%);height:auto;aspect-ratio:1;overflow:visible;opacity:.84;transition:opacity .3s,filter .3s}
+.lp-proj-e{order:1;display:block;margin-top:10px;font:500 12px/1.6 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);transition:opacity .35s,transform .35s var(--ease)}
+.lp-proj-t{order:2;display:block;max-width:100%;margin-top:4px;font:500 17px/1.35 var(--sans);letter-spacing:-.012em;color:var(--ink);overflow-wrap:anywhere;transition:color .3s}
+.lp-proj-t i{display:inline-block;font-style:normal;opacity:0;transform:translateX(-5px);transition:opacity .3s,transform .3s var(--ease)}
+a.lp-proj:hover .lp-glyph,a.lp-proj:focus-visible .lp-glyph{opacity:1;filter:drop-shadow(0 0 4px rgba(79,216,235,.5))}
+a.lp-proj:hover .lp-proj-t,a.lp-proj:focus-visible .lp-proj-t{color:#fff}
+a.lp-proj:hover .lp-proj-t i,a.lp-proj:focus-visible .lp-proj-t i{opacity:1;transform:none;color:var(--accent)}
+.lp-glyph .lp-gs,.lp-glyph .lp-gc,.lp-glyph .lp-gd{fill:none;stroke-width:.85}
+.lp-glyph .lp-gs{stroke:rgba(216,222,233,.62)}
+.lp-glyph .lp-gc{stroke:rgba(79,216,235,.92)}
+.lp-glyph .lp-gd{stroke:rgba(154,167,187,.55);stroke-width:1.05;stroke-linecap:round;stroke-dasharray:0 3.6}
+.lp-glyph .lp-gp circle{fill:#fff}
+.lp-glyph .lp-gp .cy{fill:#e6fcff}
+
+/* with the scene running: it fills the hero, the core label shows, tags reveal their eyebrow on hover */
+.lp-scene-on #lp-scene{position:absolute;inset:0;z-index:1;pointer-events:none}
+.lp-scene-on .lp-core-label{display:block;position:absolute;z-index:2;left:50%;transform:translateX(-50%);white-space:nowrap;font:500 12px var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--muted);text-shadow:0 0 8px #0d1117,0 0 16px #0d1117}
+.lp-scene-on .lp-proj-e{opacity:0;transform:translateY(4px)}
+.lp-scene-on a.lp-proj:hover .lp-proj-e,.lp-scene-on a.lp-proj:focus-visible .lp-proj-e{opacity:1;transform:none}
+@media (hover:none){.lp-scene-on .lp-proj-e{opacity:1;transform:none}}
+
+/* hero chat: the existing inline form until the hero chat box replaces it */
+.lp-chat{width:min(640px,calc(100% - 32px));margin:72px auto 0}
+.lp-chat .ws-chat-inline{margin:0 auto}
+:is(.lp-chat,.ws-chat) .ws-input{min-width:0;min-height:44px;padding:0 18px;border:1px solid var(--soft);border-radius:999px;background:rgba(8,11,16,.6);color:var(--ink);font:400 16px var(--sans)}
+:is(.lp-chat,.ws-chat) .ws-input::placeholder{color:var(--tert);opacity:1}
+:is(.lp-chat,.ws-chat) .ws-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border:0;border-radius:999px;background:rgba(216,222,233,.07);color:var(--ink);font:500 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background-color .25s,color .25s}
+:is(.lp-chat,.ws-chat) .ws-btn:hover{background:rgba(255,138,92,.14);color:var(--accent)}
+.ws-chat .ws-btn-primary,.ws-chat .ws-btn-primary:hover{background:var(--accent);color:#0d1117}
+
+/* ---------- lower half: one editorial grid per section ---------- */
+.lp-wrap{width:min(1200px,calc(100% - 2 * var(--gutter)));margin-inline:auto}
+.lp-sec{padding:128px 0 0}
+.lp-lower > .lp-sec:first-child{padding-top:96px}
+/* the numbers strip is short, so the next section sits closer to it */
+#results + .lp-sec{padding-top:56px}
+.lp-mod{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:48px 64px;padding-top:28px;border-top:1px solid var(--rule)}
+.lp-mod-h{align-self:start;position:sticky;top:88px}
+.lp-mod-b{min-width:0}
+.lp-label{margin:0;font:500 12px/1.75 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.lp-label .no{margin-right:12px;letter-spacing:.12em;color:var(--tert)}
+.lp-h2{margin:.55em 0 0;font:300 clamp(1.85rem,2.7vw,2.4rem)/1.16 var(--sans);letter-spacing:-.02em;text-wrap:balance}
+.lp-h2 .acc{font-weight:500}
+.lp-hint{display:flex;align-items:center;gap:10px;margin:24px 0 0;font:400 12px/1.6 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--tert)}
+.lp-hint i{flex:none;width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+/* hints describe what the scripts add */
+html:not(.js) .lp-hint{display:none}
+.lp-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:6px 0 0;font:400 12px/1.6 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--tert)}
+.arr{display:inline-block;transition:transform .25s var(--ease)}
+
+/* marks: case study, figure, in progress, area */
+.mk{flex:none;display:inline-block;width:7px;height:7px;border-radius:50%;background:#eaf6fb;box-shadow:0 0 6px rgba(79,216,235,.7)}
+.mk.k-fig{width:12px;height:12px;border-radius:0;box-shadow:none;clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
+.mk.k-wip{background:transparent;box-shadow:inset 0 0 0 1.5px #eaf6fb}
+.mk.k-area{width:9px;height:9px;background:transparent;box-shadow:inset 0 0 0 1.5px var(--accent)}
+
+/* ---------- results ---------- */
+.lp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:40px 28px}
+.lp-stat{position:relative;display:block;padding:22px 0 8px;border-top:1px solid rgba(154,167,187,.18);text-decoration:none;color:inherit}
+.lp-stat::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .55s var(--ease)}
+.lp-stat:hover::before,.lp-stat:focus-visible::before{transform:scaleX(1)}
+.lp-stat:focus-visible{outline-offset:8px}
+.lp-num{display:block;font:300 clamp(2.5rem,4vw,3.4rem)/1 var(--sans);letter-spacing:-.04em;font-variant-numeric:tabular-nums;white-space:nowrap;transition:color .3s,text-shadow .3s}
+.lp-num .suf{margin-left:.06em;font-size:.56em;letter-spacing:0;color:var(--muted);transition:color .3s}
+.lp-lab{display:block;max-width:12em;margin:16px 0 0;font-size:16px;line-height:1.5;color:var(--muted);transition:color .3s}
+.lp-stat:hover .lp-num,.lp-stat:focus-visible .lp-num{color:#fff;text-shadow:0 0 22px rgba(79,216,235,.25)}
+.lp-stat:hover .suf,.lp-stat:focus-visible .suf{color:var(--accent)}
+.lp-stat:hover .lp-lab,.lp-stat:focus-visible .lp-lab{color:var(--ink)}
+
+/* ---------- expertise: one row per area with its proof (the star chart script enhances this) ---------- */
+.lp-areas,.lp-work{margin:0;padding:0;list-style:none}
+.lp-area,.lp-row{padding:22px 0 30px;border-bottom:1px solid var(--hair)}
+.lp-area-t{display:grid;grid-template-columns:36px minmax(0,1fr);gap:20px;align-items:baseline;margin:0;font:500 19px/1.3 var(--sans);letter-spacing:-.01em;color:var(--ink);overflow-wrap:anywhere;text-wrap:balance}
+.lp-area-t .no,.lp-row > .no{font:500 12px var(--sans);letter-spacing:.1em;color:var(--tert)}
+.lp-area > :not(h3){margin-left:56px}
+.lp-body{max-width:46em;margin-top:14px;margin-bottom:10px;font-size:16px;line-height:1.7;color:var(--ink);opacity:.9}
+.lp-proof{max-width:46em;margin-top:0;margin-bottom:0;padding:0;list-style:none}
+.lp-proof li{border-bottom:1px solid rgba(154,167,187,.1)}
+.lp-pr{display:grid;grid-template-columns:14px minmax(0,1fr) auto 16px;align-items:center;gap:12px;min-height:46px;padding:6px 0;color:var(--ink);font:400 16px/1.35 var(--sans);text-decoration:none;transition:color .25s}
+.lp-pr .mk{justify-self:center}
+.lp-pr > span:first-of-type{overflow-wrap:anywhere}
+.lp-pr small{font:400 11px/1.4 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--tert);white-space:nowrap}
+.lp-pr .arr{color:var(--tert);transition:transform .25s var(--ease),color .25s}
+a.lp-pr:hover,a.lp-pr:focus-visible{color:#fff}
+a.lp-pr:hover .arr,a.lp-pr:focus-visible .arr{color:var(--accent);transform:translateX(4px)}
+
+/* ---------- work: one row per project ---------- */
+.lp-row{display:grid;grid-template-columns:36px minmax(0,1fr);gap:20px}
+.lp-row > .no{padding-top:6px}
+.lp-row-b{min-width:0}
+.lp-ttl{margin:0;font:500 19px/1.3 var(--sans);letter-spacing:-.01em;color:var(--ink);overflow-wrap:anywhere;text-wrap:balance}
+.lp-ttl .sub{font-weight:400;color:var(--muted)}
+.lp-meta .lp-proves{display:inline-flex;align-items:center;gap:8px}
+.lp-status{display:inline-flex;align-items:center;gap:8px;min-height:24px;padding:0 10px;border-radius:999px;background:rgba(79,216,235,.09);font:500 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
+.lp-status i{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.lp-sum{max-width:46em;margin:14px 0 6px;font-size:17px;line-height:1.65;color:var(--ink)}
+.lp-tlink{display:inline-flex;align-items:center;gap:10px;min-height:44px;color:var(--accent);font:500 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;text-decoration:underline;text-decoration-color:rgba(255,138,92,.35);text-underline-offset:8px;transition:text-decoration-color .25s}
+.lp-tlink:hover,.lp-tlink:focus-visible{text-decoration-color:currentColor}
+.lp-tlink:hover .arr,.lp-tlink:focus-visible .arr{transform:translateX(4px)}
+
+/* ---------- contact: links, then the contact form (its ws- markup, restyled here) ---------- */
+.lp-c-links{display:flex;flex-wrap:wrap;gap:24px 64px;margin:0 0 56px}
+.lp-c-link{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0;min-height:44px;text-decoration:none}
+.lp-c-link small{font:500 12px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--tert)}
+.lp-c-link span{max-width:100%;padding-bottom:4px;border-bottom:1px solid rgba(255,138,92,.45);font:400 clamp(1.1rem,1.7vw,1.35rem)/1.3 var(--sans);overflow-wrap:anywhere;transition:border-color .25s,color .25s}
+.lp-c-link:hover span{border-color:var(--accent);color:#fff}
+#contact .ws-form{display:grid;gap:26px;max-width:600px;margin:0}
+#contact .ws-field label{display:block;margin-bottom:6px;font:500 12px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--tert)}
+#contact .ws-req{color:var(--accent)}
+#contact .ws-input{display:block;width:100%;min-height:44px;padding:10px 0;border:0;border-bottom:1px solid rgba(154,167,187,.3);border-radius:0;background:transparent;color:var(--ink);font:400 17px/1.5 var(--sans);transition:border-color .25s,box-shadow .25s}
+#contact textarea.ws-input{min-height:112px;resize:vertical}
+#contact .ws-input:focus{border-bottom-color:var(--cyan);box-shadow:0 1px 0 var(--cyan)}
+#contact .ws-btn{justify-self:start;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:0 24px;border:0;border-radius:999px;background:var(--accent);color:#0d1117;font:500 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background-color .25s}
+#contact .ws-btn:hover{background:#ffa27e}
+#contact .ws-btn[disabled]{background:rgba(154,167,187,.1);color:var(--muted);cursor:not-allowed}
+#contact .ws-icon{width:16px;height:16px}
+#contact .ws-hint{margin:0;font-size:16px;color:var(--muted)}
+#contact .ws-link{color:var(--ink);text-decoration-color:rgba(255,138,92,.6);text-underline-offset:3px}
+
+/* ---------- tablet ---------- */
+@media (max-width:1199px){
+  .lp-text{width:min(500px,calc(100% - 32px))}
+  .lp-lede{max-width:24em}
+}
+@media (max-width:1180px){
+  .lp-sec{padding-top:104px}
+  .lp-mod{grid-template-columns:minmax(0,1fr);gap:36px}
+  .lp-mod-h{position:static}
+  .lp-stats{gap:32px 24px}
+}
+
+/* ---------- phones ---------- */
+@media (max-width:760px){
+  .lp-lower{font-size:16px}
+  .lp-eyebrow{letter-spacing:.12em}
+  .lp-headline{white-space:normal}
+  .lp-projects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 16px;max-width:680px}
+  .lp-projects > li{width:auto}
+  .lp-sec{padding-top:80px}
+  .lp-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lp-area > :not(h3){margin-left:0}
+  .lp-area-t,.lp-row{grid-template-columns:28px minmax(0,1fr);gap:12px}
+  .lp-ttl,.lp-area-t{font-size:17px}
+  .lp-sum{font-size:17px}
+  .lp-c-links{gap:24px 40px}
+}
+@media (max-width:639px){
+  .lp-projects{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lp-projects > li:last-child:nth-child(odd){grid-column:1/-1}
+}
+
+/* ---------- reduced motion: everything still, fully readable ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}

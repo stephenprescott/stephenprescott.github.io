@@ -45,9 +45,9 @@ test('Footer matches golden', () => {
   }));
 });
 
-test('built page: theme script precedes stylesheets, which load tokens, bundle, site, motion; skip link present', async () => {
+test('built résumé page (old shell): theme script precedes stylesheets, which load tokens, bundle, site, motion; skip link present', async () => {
   const dir = await build();
-  const html = readFileSync(join(dir, 'index.html'), 'utf8');
+  const html = readFileSync(join(dir, 'resume/index.html'), 'utf8');
   const script = html.indexOf("localStorage.getItem('ws-theme')");
   const first = html.indexOf('rel="stylesheet"');
   assert.ok(script > -1 && first > -1 && script < first, 'theme script must come before first stylesheet');
@@ -57,7 +57,7 @@ test('built page: theme script precedes stylesheets, which load tokens, bundle, 
   assert.match(html, /<main id="main">/);
 });
 
-test('theme toggle switches data-theme even when localStorage throws', async () => {
+test('résumé theme toggle switches data-theme even when localStorage throws', async () => {
   const dir = await build();
   const server = await serve(dir);
   const browser = await chromium.launch();
@@ -66,7 +66,7 @@ test('theme toggle switches data-theme even when localStorage throws', async () 
     await page.addInitScript(() => {
       Object.defineProperty(window, 'localStorage', { get() { throw new Error('blocked'); } });
     });
-    await page.goto(server.url + '/');
+    await page.goto(server.url + '/resume/');
     const before = await page.getAttribute('html', 'data-theme');
     assert.ok(['dark', 'light'].includes(before));
     await page.click('.ws-icon-btn');

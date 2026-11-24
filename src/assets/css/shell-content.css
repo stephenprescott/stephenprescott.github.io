@@ -1,7 +1,7 @@
-/* Content pages on the dark shell: project list, case studies, 404.
+/* Content pages on the dark shell (project list, case studies, 404), and any shell page with the chat panel.
    Re-maps the design-system custom properties read by bundle.css, site.css and chat.css
    onto the shell palette, so those components render dark without being edited.
-   Dark only: there are no light values. Load after shell.css, bundle.css and site.css. */
+   Dark only: there are no light values. Load after shell.css (and bundle.css and site.css when present). */
 .sh-root{
   /* colour */
   --primary:#0d1117; --secondary:#d8dee9;

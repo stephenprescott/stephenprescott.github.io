@@ -1,42 +1,94 @@
-{% from "components/hero.njk" import hero -%}
-{% from "components/hero-visual.njk" import heroVisual -%}
+{#- The landing page. Complete without JavaScript: every list is server-rendered from `landing`
+    (lib/landing-data.mjs). Scripts enhance this markup through the ids and data- hooks below. -#}
+{% from "components/project-glyph.njk" import projectGlyph -%}
 {% from "components/chat.njk" import chatInline -%}
-{% from "components/highlight.njk" import highlight -%}
-{% from "components/button.njk" import button -%}
-{% from "components/social-links.njk" import socialLinks -%}
-{% from "components/stat.njk" import stat -%}
-{% from "components/feature-card.njk" import featureCard -%}
-{% from "components/section-heading.njk" import sectionHeading -%}
-{% from "components/project-grid.njk" import projectGrid -%}
-{% from "components/role-picker.njk" import rolePicker -%}
-{% from "components/avatar.njk" import avatar -%}
-{% from "components/timeline.njk" import timeline -%}
-{% from "components/skill-group.njk" import skillGroup -%}
-{% from "components/article-list.njk" import articleList -%}
 {% from "components/contact-form.njk" import contactForm -%}
-{% set heroTitle %}{{ home.hero.pre }}{{ highlight(home.hero.highlight) }}{{ home.hero.post }}{% endset -%}
-{% set heroActions %}{% for c in home.hero.ctas %}{% if c.action == "open-chat" %}<button type="button" class="ws-btn ws-btn-{{ c.variant or 'quiet' }}" data-chat-open hidden>{{ c.label }}</button>{% else %}{{ button(c.label, c.href, c.variant or "primary") }}{% endif %}{% endfor %}{% if site.social | length %}{{ socialLinks(site.social) }}{% endif %}{% if chatEndpoint %}{{ chatInline() }}{% endif %}{% endset -%}
-{{ hero(eyebrow=home.hero.eyebrow, title=heroTitle, body=home.hero.body, actions=heroActions) }}
-{{ heroVisual() }}
 
-{{ rolePicker(roles, chat.starters) }}
+{#- "Title" + accent word -> "Ti<span class=acc>tle</span>." -#}
+{% macro accented(text, word) -%}
+{%- set at = text.lastIndexOf(word) if word else -1 -%}
+{%- if at > -1 %}{{ text.slice(0, at) }}<span class="acc">{{ word }}</span>{{ text.slice(at + word.length) }}{% else %}{{ text }}{% endif %}.
+{%- endmacro %}
+{% macro two(n) %}{{ "0" if n < 10 }}{{ n }}{% endmacro %}
+{% macro sectionHead(no, eyebrow, title, accent, hint="") -%}
+<div class="lp-mod-h"><p class="lp-label"><span class="no" aria-hidden="true">{{ two(no) }}</span>{{ eyebrow }}</p><h2 class="lp-h2">{{ accented(title, accent) }}</h2>{% if hint %}<p class="lp-hint"><i aria-hidden="true"></i>{{ hint }}</p>{% endif %}</div>
+{%- endmacro %}
+{% set no = 1 -%}
 
-{% if home.stats | length %}
-<section class="ws-section" aria-label="Highlights"><div class="ws-container"><div class="ws-row">{% for s in home.stats %}{{ stat(s.value ~ (s.suffix or ''), s.label, count=true) }}{% endfor %}</div></div></section>
+<svg class="lp-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><radialGradient id="lp-gInk"><stop offset="0" stop-color="#ffffff" stop-opacity=".55"/><stop offset=".25" stop-color="#d8dee9" stop-opacity=".16"/><stop offset="1" stop-color="#d8dee9" stop-opacity="0"/></radialGradient><radialGradient id="lp-gCy"><stop offset="0" stop-color="#c9f6fc" stop-opacity=".8"/><stop offset=".3" stop-color="#4fd8eb" stop-opacity=".24"/><stop offset="1" stop-color="#4fd8eb" stop-opacity="0"/></radialGradient></defs></svg>
+
+<section class="lp-hero" id="top">
+<p class="sr">Illustration: a black hole labelled Stephen's AI. Each project is a constellation, and a stream of data runs from every constellation into it.</p>
+<div id="lp-scene" aria-hidden="true"></div>
+<span class="lp-core-label" aria-hidden="true">Stephen's AI</span>
+<div class="lp-text">
+{% set eb = home.hero.eyebrow.split(" · ") -%}
+<p class="lp-eyebrow">{% if eb.length > 1 %}<span class="l">{{ eb.slice(0, -1).join(" · ") }}</span><span class="sr"> · </span><span class="l">{{ eb[eb.length - 1] }}</span>{% else %}{{ home.hero.eyebrow }}{% endif %}</p>
+<h1 class="lp-headline">{{ accented(home.hero.headline, home.hero.headlineAccent) }}</h1>
+<p class="lp-lede">{{ home.hero.pre }}{{ home.hero.highlight }}{{ home.hero.post }}</p>
+<div class="lp-cta">{% for c in home.hero.ctas %}{% if c.action == "open-chat" %}{% if chatEndpoint %}<button type="button" class="lp-btn" data-chat-open hidden>{{ c.label }}</button>{% endif %}{% else %}<a class="lp-btn{% if c.variant == 'primary' %} primary{% endif %}" href="{{ c.href }}">{{ c.label }}</a>{% endif %}{% endfor %}</div>
+</div>
+{% if landing.projects | length %}<ul class="lp-projects">
+{% for p in landing.projects %}{% set inner %}{{ projectGlyph(p.slug) }}<span class="lp-proj-t">{{ p.shortTitle }}{% if p.href %}<i aria-hidden="true"> →</i>{% endif %}</span>{% if p.subtitle or p.status %}<span class="lp-proj-e">{{ p.subtitle or p.status }}</span>{% endif %}{% endset -%}
+<li data-slug="{{ p.slug }}">{% if p.href %}<a class="lp-proj" href="{{ p.href }}">{{ inner | safe }}</a>{% else %}<span class="lp-proj">{{ inner | safe }}</span>{% endif %}</li>
+{% endfor %}</ul>{% endif %}
+{% if chatEndpoint %}<div class="lp-chat">{{ chatInline() }}</div>{% endif %}
+</section>
+
+<div class="lp-lower">
+{% if landing.figures | length %}{% set no = no + 1 -%}
+<section class="lp-sec" id="results"><div class="lp-wrap lp-mod">
+{{ sectionHead(no, home.results.eyebrow, home.results.title, home.results.accent, "Select a figure to find it on the chart") }}
+<div class="lp-mod-b"><div class="lp-stats">
+{% for f in landing.figures %}<a class="lp-stat" href="#expertise" data-fig="{{ f.id }}"><span class="lp-num">{{ f.value }}<span class="suf">{{ f.suffix }}</span></span><span class="lp-lab">{{ f.label }}</span></a>
+{% endfor %}</div></div>
+</div></section>
 {% endif %}
 
-{% if home.expertise.items | length %}
-<section class="ws-section" id="expertise" data-reveal><div class="ws-container">{{ sectionHeading(home.expertise.eyebrow, home.expertise.title) }}<div class="ws-row">{% for f in home.expertise.items %}{{ featureCard("", f.title, f.body) }}{% endfor %}</div></div></section>
+{% if landing.areas | length %}{% set no = no + 1 -%}
+<section class="lp-sec" id="expertise"><div class="lp-wrap lp-mod">
+{{ sectionHead(no, home.expertise.eyebrow, home.expertise.title, home.expertise.accent, "Pick an area to light up its proof") }}
+<div class="lp-mod-b"><ul class="lp-areas">
+{% for a in landing.areas -%}
+{%- set proof = [] -%}
+{%- for p in landing.projects %}{% if a.id in p.proves %}{% set _ = proof.push({ t: p.shortTitle, href: p.href, kind: "Case study", status: p.status }) %}{% endif %}{% endfor -%}
+{%- for f in landing.figures %}{% if a.id in f.proves %}{% set _ = proof.push({ t: f.value ~ f.suffix ~ " " ~ f.label, href: "/resume/", kind: "Figure", fig: true }) %}{% endif %}{% endfor -%}
+<li class="lp-area" data-area="{{ a.id }}">
+<h3 class="lp-area-t"><span class="no" aria-hidden="true">{{ two(loop.index) }}</span><span>{{ a.title }}</span></h3>
+{% if proof | length %}<p class="lp-meta">Proof · {{ two(proof | length) }}</p>{% endif %}
+<p class="lp-body">{{ a.body }}</p>
+{% if proof | length %}<ul class="lp-proof">{% for it in proof %}<li>{% set row %}<i class="mk{% if it.fig %} k-fig{% elif it.status %} k-wip{% endif %}" aria-hidden="true"></i><span>{{ it.t }}</span><small>{{ it.status or it.kind }}</small>{% endset %}{% if it.href %}<a class="lp-pr" href="{{ it.href }}">{{ row | safe }}<span class="arr" aria-hidden="true">→</span></a>{% else %}<span class="lp-pr">{{ row | safe }}</span>{% endif %}</li>{% endfor %}</ul>{% endif %}
+</li>
+{% endfor %}</ul></div>
+</div></section>
 {% endif %}
 
-{% if projects | length %}
-<section class="ws-section" id="work" data-reveal><div class="ws-container">{{ sectionHeading(home.work.eyebrow, home.work.title) }}{{ projectGrid(projects) }}</div></section>
+{% if landing.projects | length %}{% set no = no + 1 -%}
+<section class="lp-sec" id="work"><div class="lp-wrap lp-mod">
+{{ sectionHead(no, home.work.eyebrow, home.work.title, home.work.accent, "Open any entry to see more") }}
+<div class="lp-mod-b"><ol class="lp-work">
+{% for p in landing.projects %}{% set n = p.proves | length -%}
+<li class="lp-row" data-slug="{{ p.slug }}">
+<span class="no" aria-hidden="true">{{ two(loop.index) }}</span>
+<div class="lp-row-b">
+<h3 class="lp-ttl">{{ p.shortTitle }}{% if p.subtitle %}<span class="sub">: {{ p.subtitle }}</span>{% endif %}</h3>
+<p class="lp-meta">{% if p.eyebrow %}<span>{{ p.eyebrow }}</span>{% endif %}{% if p.status %}<span class="lp-status"><i aria-hidden="true"></i>{{ p.status }}</span>{% endif %}{% if n %}<span class="lp-proves"><i class="mk k-area" aria-hidden="true"></i>Proves {{ n }} area{{ "s" if n != 1 }}</span>{% endif %}</p>
+<p class="lp-sum">{{ p.summary }}</p>
+{% if p.href %}<a class="lp-tlink" href="{{ p.href }}">Read the case study<span class="sr">: {{ p.shortTitle }}</span> <span class="arr" aria-hidden="true">→</span></a>{% endif %}
+</div>
+</li>
+{% endfor %}</ol></div>
+</div></section>
 {% endif %}
 
-<section class="ws-section" id="about" data-reveal><div class="ws-container">{{ sectionHeading(home.about.eyebrow, home.about.title) }}<div class="ws-row"><div style="display:flex;flex-direction:column;gap:var(--space-sm)">{{ avatar(name=site.name, size=120) }}<p class="ws-card-body">{{ home.about.bio }}</p></div>{% if experience | length %}{{ timeline(experience) }}{% endif %}<div style="display:flex;flex-direction:column;gap:var(--space-md)">{% for g in home.about.skills %}{{ skillGroup(g.title, g.skills) }}{% endfor %}</div></div>{% if home.about.learning | length %}<div style="margin-top:var(--space-lg)"><h3 class="ws-eyebrow">Training and education</h3>{{ articleList(home.about.learning) }}</div>{% endif %}</div></section>
+{% set no = no + 1 -%}
+<section class="lp-sec" id="contact"><div class="lp-wrap lp-mod">
+{{ sectionHead(no, home.contact.eyebrow, home.contact.title, home.contact.accent) }}
+<div class="lp-mod-b">
+<div class="lp-c-links">{% for s in site.social %}<a class="lp-c-link" href="{{ s.href }}"><small>{{ s.label }}</small><span>{{ s.href | replace("mailto:", "") | replace("https://www.linkedin.com/", "") }}</span></a>{% endfor %}</div>
+{% if contact.enabled !== false %}{{ contactForm(action="#", disabled=not contact.web3formsKey, email=site.email, accessKey=contact.web3formsKey) }}{% endif %}
+</div>
+</div></section>
+</div>
 
-{% if articles | length %}
-<section class="ws-section" id="writing" data-reveal><div class="ws-container">{{ sectionHeading(home.writing.eyebrow, home.writing.title) }}{{ articleList(articles) }}</div></section>
-{% endif %}
-
-<section class="ws-section" id="contact" data-reveal><div class="ws-container">{{ sectionHeading(home.contact.eyebrow, home.contact.title) }}{% if contact.enabled === false %}<p class="ws-card-body">Email <a class="ws-link" href="mailto:{{ site.email }}">{{ site.email }}</a>{% for s in site.social %}{% if s.label == "LinkedIn" %} or connect on <a class="ws-link" href="{{ s.href }}">LinkedIn</a>{% endif %}{% endfor %}.</p>{% else %}{{ contactForm(action="#", disabled=not contact.web3formsKey, email=site.email, accessKey=contact.web3formsKey) }}{% endif %}</div></section>
+<script type="application/json" id="lp-data">{{ { areas: landing.areas, figures: landing.figures, projects: landing.projects, starters: ((chat.starters or []) if chatEndpoint else []), hasChat: not not chatEndpoint } | dump | replace("</", "<\\/") | safe }}</script>
