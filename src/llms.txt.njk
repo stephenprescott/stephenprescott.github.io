@@ -1,0 +1,16 @@
+---
+permalink: /llms.txt
+eleventyExcludeFromCollections: true
+---
+# {{ site.name }}
+
+> {{ site.title }}. {{ site.description }}
+
+This is the personal portfolio site of {{ site.name }}. Each link below is a plain page with the full text.
+
+- [Home]({{ site.url }}/): profile, expertise, skills and contact
+- [Resume]({{ site.url }}/resume/): work history, skills, training and education
+- [Projects]({{ site.url }}/projects/): selected projects and case studies
+{%- for cs in caseStudies %}
+- [{{ cs.title }}]({{ site.url }}/projects/{{ cs.slug }}/): {{ cs.summary }}
+{%- endfor %}

@@ -1,0 +1,42 @@
+{% from "components/hero.njk" import hero -%}
+{% from "components/hero-visual.njk" import heroVisual -%}
+{% from "components/chat.njk" import chatInline -%}
+{% from "components/highlight.njk" import highlight -%}
+{% from "components/button.njk" import button -%}
+{% from "components/social-links.njk" import socialLinks -%}
+{% from "components/stat.njk" import stat -%}
+{% from "components/feature-card.njk" import featureCard -%}
+{% from "components/section-heading.njk" import sectionHeading -%}
+{% from "components/project-grid.njk" import projectGrid -%}
+{% from "components/role-picker.njk" import rolePicker -%}
+{% from "components/avatar.njk" import avatar -%}
+{% from "components/timeline.njk" import timeline -%}
+{% from "components/skill-group.njk" import skillGroup -%}
+{% from "components/article-list.njk" import articleList -%}
+{% from "components/contact-form.njk" import contactForm -%}
+{% set heroTitle %}{{ home.hero.pre }}{{ highlight(home.hero.highlight) }}{{ home.hero.post }}{% endset -%}
+{% set heroActions %}{% for c in home.hero.ctas %}{% if c.action == "open-chat" %}<button type="button" class="ws-btn ws-btn-{{ c.variant or 'quiet' }}" data-chat-open hidden>{{ c.label }}</button>{% else %}{{ button(c.label, c.href, c.variant or "primary") }}{% endif %}{% endfor %}{% if site.social | length %}{{ socialLinks(site.social) }}{% endif %}{% if chatEndpoint %}{{ chatInline() }}{% endif %}{% endset -%}
+{{ hero(eyebrow=home.hero.eyebrow, title=heroTitle, body=home.hero.body, actions=heroActions) }}
+{{ heroVisual() }}
+
+{{ rolePicker(roles, chat.starters) }}
+
+{% if home.stats | length %}
+<section class="ws-section" aria-label="Highlights"><div class="ws-container"><div class="ws-row">{% for s in home.stats %}{{ stat(s.value, s.label, s.note, count=true) }}{% endfor %}</div></div></section>
+{% endif %}
+
+{% if home.expertise.items | length %}
+<section class="ws-section" id="expertise" data-reveal><div class="ws-container">{{ sectionHeading(home.expertise.eyebrow, home.expertise.title) }}<div class="ws-row">{% for f in home.expertise.items %}{{ featureCard("", f.title, f.body) }}{% endfor %}</div></div></section>
+{% endif %}
+
+{% if projects | length %}
+<section class="ws-section" id="work" data-reveal><div class="ws-container">{{ sectionHeading(home.work.eyebrow, home.work.title) }}{{ projectGrid(projects) }}</div></section>
+{% endif %}
+
+<section class="ws-section" id="about" data-reveal><div class="ws-container">{{ sectionHeading(home.about.eyebrow, home.about.title) }}<div class="ws-row"><div style="display:flex;flex-direction:column;gap:var(--space-sm)">{{ avatar(name=site.name, size=120) }}<p class="ws-card-body">{{ home.about.bio }}</p></div>{% if experience | length %}{{ timeline(experience) }}{% endif %}<div style="display:flex;flex-direction:column;gap:var(--space-md)">{% for g in home.about.skills %}{{ skillGroup(g.title, g.skills) }}{% endfor %}</div></div>{% if home.about.learning | length %}<div style="margin-top:var(--space-lg)"><h3 class="ws-eyebrow">Training and education</h3>{{ articleList(home.about.learning) }}</div>{% endif %}</div></section>
+
+{% if articles | length %}
+<section class="ws-section" id="writing" data-reveal><div class="ws-container">{{ sectionHeading(home.writing.eyebrow, home.writing.title) }}{{ articleList(articles) }}</div></section>
+{% endif %}
+
+<section class="ws-section" id="contact" data-reveal><div class="ws-container">{{ sectionHeading(home.contact.eyebrow, home.contact.title) }}{% if contact.enabled === false %}<p class="ws-card-body">Email <a class="ws-link" href="mailto:{{ site.email }}">{{ site.email }}</a>{% for s in site.social %}{% if s.label == "LinkedIn" %} or connect on <a class="ws-link" href="{{ s.href }}">LinkedIn</a>{% endif %}{% endfor %}.</p>{% else %}{{ contactForm(action="#", disabled=not contact.web3formsKey, email=site.email, accessKey=contact.web3formsKey) }}{% endif %}</div></section>

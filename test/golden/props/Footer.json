@@ -1,0 +1,34 @@
+{
+ "props": {
+  "brand": "Stephen Groff",
+  "columns": [
+   {
+    "title": "Site",
+    "links": [
+     {
+      "label": "Work",
+      "href": "#work"
+     },
+     {
+      "label": "About",
+      "href": "#about"
+     },
+     {
+      "label": "Contact",
+      "href": "#contact"
+     }
+    ]
+   },
+   {
+    "title": "Elsewhere",
+    "links": [
+     {
+      "label": "GitHub",
+      "href": "https://github.com/x"
+     }
+    ]
+   }
+  ],
+  "legal": "© 2026 Stephen Groff."
+ }
+}

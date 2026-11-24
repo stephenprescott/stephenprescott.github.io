@@ -1,0 +1,3 @@
+{% macro timeline(items=[]) -%}
+<ol class="ws-root ws-timeline">{% for i in items %}<li><p class="ws-eyebrow">{{ i.period }}</p><h3 class="ws-timeline-title">{{ i.title }}</h3>{% if i.org %}<p class="ws-timeline-org">{{ i.org }}</p>{% endif %}{% if i.body %}<p class="ws-card-body">{{ i.body }}</p>{% endif %}</li>{% endfor %}</ol>
+{%- endmacro %}

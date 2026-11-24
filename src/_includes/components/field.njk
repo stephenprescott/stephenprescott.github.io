@@ -1,0 +1,4 @@
+{% macro field(label, name, type="", required=false, hint="", multiline=false, rows=5, autocomplete="") -%}
+{% set id = "ws-f-" + name -%}
+<div class="ws-field"><label for="{{ id }}">{{ label }}{% if required %}<span class="ws-req" aria-hidden="true"> *</span>{% endif %}</label>{% if multiline %}<textarea name="{{ name }}" rows="{{ rows }}"{% if autocomplete %} autocomplete="{{ autocomplete }}"{% endif %}{% if required %} required{% endif %} id="{{ id }}" class="ws-input"{% if hint %} aria-describedby="{{ id }}-hint"{% endif %}></textarea>{% else %}<input name="{{ name }}"{% if type %} type="{{ type }}"{% endif %}{% if autocomplete %} autocomplete="{{ autocomplete }}"{% endif %}{% if required %} required{% endif %} id="{{ id }}" class="ws-input"{% if hint %} aria-describedby="{{ id }}-hint"{% endif %}>{% endif %}{% if hint %}<p class="ws-hint" id="{{ id }}-hint">{{ hint }}</p>{% endif %}</div>
+{%- endmacro %}

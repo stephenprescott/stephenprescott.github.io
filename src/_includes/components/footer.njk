@@ -1,0 +1,3 @@
+{% macro footer(brand, columns=[], legal="") -%}
+<footer class="ws-root ws-footer"><p class="ws-footer-brand">{{ brand }}</p>{% for c in columns %}<div class="ws-footer-col"><p class="ws-eyebrow">{{ c.title }}</p><ul>{% for l in c.links %}<li><a class="ws-link" href="{{ l.href }}">{{ l.label }}</a></li>{% endfor %}</ul></div>{% endfor %}{% if legal %}<p class="ws-footer-legal">{{ legal }}</p>{% endif %}</footer>
+{%- endmacro %}

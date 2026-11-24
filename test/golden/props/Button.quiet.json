@@ -1,0 +1,7 @@
+{
+ "props": {
+  "variant": "quiet",
+  "href": "/resume.pdf"
+ },
+ "children": "Resume"
+}

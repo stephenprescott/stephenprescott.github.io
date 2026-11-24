@@ -1,0 +1,123 @@
+{
+  "contact": {
+    "name": "Stephen Groff",
+    "title": "Senior BI Developer | Data Models, Semantic Models & Executive Reporting in Healthcare and Manufacturing",
+    "location": "Minneapolis–Saint Paul",
+    "phone": "651-300-7201",
+    "email": "groff.stephen@gmail.com",
+    "linkedin": "linkedin.com/in/groffstephen"
+  },
+  "summary": "Senior BI developer with 10+ years building enterprise reporting in healthcare, manufacturing and supply chain. I lead development of the data and semantic models business units rely on, work with data stewards and stakeholders to define and measure KPIs, and build the dashboards on top, from director and executive views to regulatory compliance reporting. An earlier career in operations and process engineering, including managing a 31-person team, shapes how I turn business needs into data. At Tactile Medical I ran an audit of 600+ Power BI reports, retired more than 70%, and planned the ongoing migration of the rest to Fabric semantic models.",
+  "experience": [
+    {
+      "period": "04/2023 – 11/2026",
+      "title": "Senior BI Developer (Operational Process Reporting Analytics)",
+      "org": "Tactile Medical, Minneapolis, MN",
+      "bullets": [
+        "Senior developer among three BI developers on a five-person analytics team; lead new development and represent BI in analytics strategy discussions with business and IT leadership.",
+        "Lead development of 12+ semantic models serving four business units for self-service reporting and custom director and executive dashboards, defining and measuring KPIs with data stewards and business stakeholders.",
+        "Took over and built the gold layer in SQL Server for five source systems (8 to 60 tables each), including NetSuite, Salesforce, FileMaker and Brightree, plus part of the silver layer for two, where no one owned the data; also worked with UKG, Motus and NICE CXone data.",
+        "Ended conflicting numbers across the report catalog: audited 600+ Power BI reports, many duplicating the same data with different results, and retired more than 70%, leaving 168. Moving the rest onto single semantic models whose definitions and calculations are owned by business unit data stewards, one report at a time, and built a weekly dashboard tracking audit status.",
+        "On my own initiative, built Microsoft Copilot agents grounded in team SharePoint content, which my team and one other business unit use to ask what is happening on their projects, documents and email.",
+        "Built C-suite reporting: a real-time order operations display showing where orders were stuck in fulfillment, month-end sales forecasts, and automated nightly PDF distribution.",
+        "Built and support an integration pipeline bringing third-party vendor data into the warehouse."
+      ]
+    },
+    {
+      "period": "11/2022 – 01/2023",
+      "title": "Data Engineer",
+      "org": "Mynd, Oakland, CA (Remote)",
+      "bullets": [
+        "Stood up pre-built dbt models in Sigma Computing for self-service analytics, supplying the data behind the dashboards leadership used for product and revenue reporting.",
+        "Helped restructure dbt models, creating readable tables from the bronze layer and a repeatable pattern for cleaning data."
+      ]
+    },
+    {
+      "period": "12/2019 – 01/2023",
+      "title": "Senior Data Consultant",
+      "org": "Bright Health, Minneapolis–Saint Paul, MN (Remote)",
+      "bullets": [
+        "Built the regulatory compliance reporting from the ground up for a startup health plan: worked with the compliance manager to define what regulators required, located the source data, and built the models and reports for Commercial MLR, Medicare Advantage (Part C) and Prescription Drug Plans (Part D), and Medicaid Managed Care (MCAS and quality).",
+        "Developed data models and ETL in Databricks and Delta Lake (PySpark, Spark SQL), turning raw data from across the company's systems into report-ready compliance datasets for multiple markets.",
+        "Maintained and updated the compliance models ahead of each reporting cycle as regulatory requirements changed.",
+        "Worked with data engineering to resolve recurring Databricks cluster performance problems and set up dedicated compute; helped engineering extract data from parquet files."
+      ]
+    },
+    {
+      "period": "01/2018 – 12/2019",
+      "title": "Quality Analytics Consultant",
+      "org": "Caterpillar Inc. (contract, via The Vision Companies), Minneapolis–Saint Paul, MN (Onsite)",
+      "bullets": [
+        "Hired as a contractor to build analytics for Quality Control. After managers in other departments saw the results, they asked to be brought on, and the work expanded to Manufacturing and Assembly, Shipping and Receiving, and Inventory Management.",
+        "Rebuilt 48+ established KPIs on new tools to Caterpillar's corporate standard formulas, replacing figures kept in individual Excel files. Found that most were calculated incorrectly because the plant lacked key data, and built a process that traced every KPI back to its data origin, so plant decisions rested on validated numbers.",
+        "Worked with Caterpillar's corporate data team in Peoria to get the facility access to SAP HANA data, then built the data models that started the facility's BI build-out on HANA.",
+        "Replaced manual Excel reporting with Tableau and Power BI dashboards tracking defect metrics (DPMO, DPM) and operational performance across the facility."
+      ]
+    },
+    {
+      "period": "06/2016 – 12/2017",
+      "title": "Logistics & Analytics Contractor",
+      "org": "Delta Air Lines (contract), Minneapolis–Saint Paul, MN (Onsite)",
+      "bullets": [
+        "Brought on for operations expertise to design the floor layout of a new 40,000 sq ft on-site parts warehouse at Delta's second-largest maintenance hub: rack placement, slotting, bin locations, and pick process.",
+        "Forecast stocking needs from historical parts usage so the warehouse was fully stocked at launch, and set up the kanban replenishment system for the 3,200-SKU ground maintenance supermarket that kept parts in stock after go-live.",
+        "Built a VBA tool to track all dangerous goods shipments in and out, including the shipper and record details required under FAA regulations, replacing the manual tracking and reporting the records owner did by hand.",
+        "Took on reporting beyond the original scope: automated monthly management reports on turnover, employee hours, ship rates, and shipping and receiving turnaround, loading visuals directly into PowerPoint so managers only had to add commentary."
+      ]
+    }
+  ],
+  "earlier": [
+    {
+      "period": "04/2015 – 10/2015",
+      "title": "Materials & Logistics Supervisor",
+      "org": "Kalmar Solutions, Ottawa, KS",
+      "bullets": [
+        "Supervised 31 direct reports in a union manufacturing operation; responsible for department metrics, budget, OSHA compliance and standard work practices. Implemented a new inventory program and a Lean transition built on Kaizen events."
+      ]
+    },
+    {
+      "period": "07/2014 – 04/2015",
+      "title": "Warehouse & Inventory Manager",
+      "org": "Smart Warehousing, Lenexa, KS",
+      "bullets": [
+        "Oversaw inventory for 1,800 customers across 20+ U.S. warehouse facilities; traveled the country as interim manager, leading teams of 2 to 20 employees at individual sites. Implemented root cause corrective action, process planning and quality controls, and led change management across multiple facilities."
+      ]
+    },
+    {
+      "period": "06/2013 – 06/2014",
+      "title": "Ocean Freight Logistics Manager",
+      "org": "Valley Forge Fabrics, Fort Lauderdale, FL",
+      "bullets": [
+        "Mapped the current state of inventory and logistics for ocean and domestic freight from departmental data, and implemented a new global shipping strategy built on available technology."
+      ]
+    },
+    {
+      "period": "08/2011 – 02/2013",
+      "title": "Process Engineer",
+      "org": "Caterpillar Inc., Joliet, IL",
+      "bullets": [
+        "Designed and implemented the restructuring of a 30,000-part warehouse around a centralized inventory system, using Lean principles and SAP warehousing technology.",
+        "Implemented SOPs for cellular assembly design, an inventory record accuracy system, cycle counting and root-cause analysis."
+      ]
+    }
+  ],
+  "skills": [
+    { "title": "BI and analytics", "skills": ["Power BI", "Tableau", "Sigma", "DAX", "M (Power Query)", "Semantic Modeling", "Self-Service Analytics", "Executive Dashboards", "KPI Standardization"] },
+    { "title": "Data engineering", "skills": ["SQL Server (SSMS)", "Data Modeling", "Medallion Architecture", "ETL/ELT", "dbt", "Databricks", "Delta Lake", "PySpark", "Spark SQL", "Microsoft Fabric"] },
+    { "title": "Languages", "skills": ["SQL", "DAX", "M", "VBA", "Python (AI-assisted)"] },
+    { "title": "Source systems modeled", "skills": ["SAP HANA", "NetSuite", "Salesforce", "FileMaker", "Brightree"] },
+    { "title": "Domain", "skills": ["Healthcare and Regulatory Reporting (Medicare Advantage, Medicaid, Commercial MLR)", "Manufacturing Quality Analytics", "Supply Chain and Logistics"] },
+    { "title": "Tools and collaboration", "skills": ["Azure DevOps", "JIRA", "GitHub", "Third-Party Vendor Data Coordination", "Stakeholder Engagement"] },
+    { "title": "Applied AI", "skills": ["Microsoft Copilot agents (built for my team and one other business unit)", "AI-assisted data modeling and scripting", "MCP (coursework)"] }
+  ],
+  "training": [
+    "Introduction to Model Context Protocol and Model Context Protocol: Advanced Topics, Anthropic (2026)",
+    "Python for Data Science, AI & Development, IBM (2026)",
+    "Healthcare AI coursework, LinkedIn Learning: AI for Healthcare, NLP Techniques for Clinical Datasets, Machine Learning Fundamentals for Healthcare (2026)",
+    "Generative AI and LLM coursework, LinkedIn Learning: Working with Large Language Models, GPT Foundations (2026)",
+    "Microsoft Power BI Desktop: Advanced DAX for Data Analysis, Maven Analytics (2023)"
+  ],
+  "education": [
+    { "title": "Bachelor of Science, Sociology", "meta": "Kansas State University" }
+  ]
+}

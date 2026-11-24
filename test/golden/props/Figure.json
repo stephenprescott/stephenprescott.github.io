@@ -1,0 +1,8 @@
+{
+ "props": {
+  "src": "/img/a.png",
+  "alt": "Screenshot",
+  "caption": "Caption text.",
+  "frame": "browser"
+ }
+}

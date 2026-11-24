@@ -1,0 +1,24 @@
+{#- Floating launcher + dialog panel. Rendered only when a chat endpoint is configured.
+    Everything starts hidden; chat.js reveals the launcher. -#}
+{% macro chatPanel(endpoint, starters, siteUrl="") -%}
+<div class="ws-chat" data-chat data-endpoint="{{ endpoint }}" data-site="{{ siteUrl }}" data-starters="{{ starters | dump }}">
+<button type="button" class="ws-btn ws-btn-primary ws-chat-launcher" data-chat-launcher aria-haspopup="dialog" aria-expanded="false" aria-controls="ws-chat-panel" hidden>Ask Stephen's AI</button>
+<section id="ws-chat-panel" class="ws-chat-panel ws-root" role="dialog" aria-modal="true" aria-label="Ask Stephen's AI" data-chat-panel hidden>
+<header class="ws-chat-head"><h2 class="ws-chat-title">Ask Stephen's AI</h2><button type="button" class="ws-btn ws-btn-quiet" data-chat-close>Close</button></header>
+<p class="ws-chat-note">Answers come from this site and Stephen's resume.</p>
+<div class="ws-chat-log" role="log" aria-live="polite" aria-label="Conversation" tabindex="0" data-chat-log></div>
+<div class="ws-chat-starters" data-chat-starters></div>
+<form class="ws-chat-form" data-chat-form>
+<input type="text" class="ws-input" maxlength="500" autocomplete="off" aria-label="Your question" placeholder="Ask a question" data-chat-input>
+<button type="submit" class="ws-btn ws-btn-primary" data-chat-send>Send</button>
+</form>
+</section>
+</div>
+{%- endmacro %}
+
+{% macro chatInline() -%}
+<form class="ws-chat-inline" data-chat-inline hidden>
+<input type="text" class="ws-input" maxlength="500" autocomplete="off" aria-label="Ask Stephen's AI a question" placeholder="Ask a question">
+<button type="submit" class="ws-btn ws-btn-quiet">Ask</button>
+</form>
+{%- endmacro %}

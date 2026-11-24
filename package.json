@@ -1,0 +1,24 @@
+{
+  "name": "stephenprescott.github.io",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "eleventy",
+    "build:prod": "cross-env ELEVENTY_ENV=production eleventy",
+    "dev": "eleventy --serve",
+    "golden": "node scripts/extract-golden.mjs",
+    "test": "node scripts/run-tests.mjs"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.8",
+    "@axe-core/playwright": "^4.13.0",
+    "cheerio": "^1.2.0",
+    "cross-env": "^10.1.0",
+    "nunjucks": "^3.2.4",
+    "playwright": "^1.65.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "yaml": "^2.9.1"
+  }
+}

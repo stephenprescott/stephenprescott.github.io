@@ -1,0 +1,3 @@
+{% macro skillGroup(title, skills=[]) -%}
+<div class="ws-root ws-skill-group"><h3 class="ws-eyebrow">{{ title }}</h3><div class="ws-tags">{% for s in skills %}<span class="ws-tag">{{ s }}</span>{% endfor %}</div></div>
+{%- endmacro %}

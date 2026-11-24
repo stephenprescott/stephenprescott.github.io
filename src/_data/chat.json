@@ -1,0 +1,9 @@
+{
+  "endpoint": "https://stephen-ask.stephen-ask.workers.dev/",
+  "starters": [
+    "What has Stephen built with AI?",
+    "What is Stephen's experience?",
+    "How can I contact Stephen?"
+  ],
+  "enabled": true
+}

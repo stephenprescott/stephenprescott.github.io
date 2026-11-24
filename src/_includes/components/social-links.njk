@@ -1,0 +1,4 @@
+{% macro socialLinks(links=[]) -%}
+{% from "components/icon.njk" import icon -%}
+<ul class="ws-social">{% for l in links %}<li><a class="ws-btn ws-btn-quiet ws-icon-btn" href="{{ l.href }}" aria-label="{{ l.label }}" title="{{ l.label }}">{{ icon(l.icon, 20) }}</a></li>{% endfor %}</ul>
+{%- endmacro %}

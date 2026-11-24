@@ -1,0 +1,3 @@
+{% macro icon(name, size=20) -%}
+<svg width="{{ size }}" height="{{ size }}" viewBox="0 0 256 256" fill="currentColor" class="ws-icon" aria-hidden="true">{{ icons[name] | safe }}</svg>
+{%- endmacro %}

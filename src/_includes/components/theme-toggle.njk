@@ -1,0 +1,8 @@
+{% macro themeToggle(theme="dark") -%}
+{% from "components/icon.njk" import icon -%}
+{% if theme == "light" -%}
+<button type="button" class="ws-btn ws-btn-quiet ws-icon-btn" aria-label="Switch to dark mode" title="Dark mode">{{ icon("moon", 20) }}</button>
+{%- else -%}
+<button type="button" class="ws-btn ws-btn-quiet ws-icon-btn" aria-label="Switch to light mode" title="Light mode">{{ icon("sun", 20) }}</button>
+{%- endif %}
+{%- endmacro %}

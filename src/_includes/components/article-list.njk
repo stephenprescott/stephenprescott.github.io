@@ -1,0 +1,3 @@
+{% macro articleList(items=[]) -%}
+<ul class="ws-root ws-articles">{% for a in items %}<li>{% if a.meta %}<p class="ws-eyebrow">{{ a.meta }}</p>{% endif %}<h3 class="ws-card-title">{% if a.href %}<a class="ws-project-link" href="{{ a.href }}">{{ a.title }}{% if a.external %}<svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" class="ws-icon" role="img" aria-label="opens another site">{{ icons["arrow-up-right"] | safe }}</svg>{% endif %}</a>{% else %}{{ a.title }}{% endif %}</h3></li>{% endfor %}</ul>
+{%- endmacro %}

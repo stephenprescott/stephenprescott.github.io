@@ -1,0 +1,22 @@
+{
+ "props": {
+  "eyebrow": "Role · City",
+  "title": [
+   "Headline about ",
+   {
+    "$el": "Highlight",
+    "props": {},
+    "children": "what I do"
+   },
+   "."
+  ],
+  "body": "Intro sentence.",
+  "actions": {
+   "$el": "Button",
+   "props": {
+    "href": "#work"
+   },
+   "children": "See my work"
+  }
+ }
+}

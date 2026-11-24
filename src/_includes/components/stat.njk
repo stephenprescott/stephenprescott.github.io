@@ -1,0 +1,3 @@
+{% macro stat(value, label, note="", count=false) -%}
+<div class="ws-root ws-stat"><p{% if count %} data-count="{{ value | int }}"{% endif %} class="ws-stat-value">{{ value }}</p><p class="ws-stat-label">{{ label }}</p>{% if note %}<p class="ws-stat-note">{{ note }}</p>{% endif %}</div>
+{%- endmacro %}

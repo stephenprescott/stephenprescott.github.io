@@ -1,0 +1,7 @@
+{#- The filter row ships with `hidden`; assets/js/filter.js reveals it. Without JavaScript every card shows. -#}
+{% macro projectGrid(projects=[], filter=true, allLabel="All") -%}
+{% from "components/project-card.njk" import projectCard -%}
+{% set seen = [] -%}
+{% for p in projects %}{% for t in p.tags %}{% if t not in seen %}{% set seen = (seen.push(t), seen) %}{% endif %}{% endfor %}{% endfor -%}
+<div class="ws-root ws-grid-wrap">{% if filter %}<div class="ws-tags ws-filter" hidden role="group" aria-label="Filter projects"><button type="button" class="ws-tag ws-tag-active" aria-pressed="true">{{ allLabel }}</button>{% for t in seen %}<button type="button" class="ws-tag" aria-pressed="false">{{ t }}</button>{% endfor %}</div>{% endif %}<div class="ws-row" aria-live="polite">{% for p in projects %}{% set cardHref = p.href or (("/projects/" + p.slug + "/") if (p.caseStudy and p.slug) else "") %}{{ projectCard(p.title, p.eyebrow, p.summary, p.image, p.imageAlt, p.tags, cardHref, p.status, p.slug) }}{% endfor %}</div></div>
+{%- endmacro %}

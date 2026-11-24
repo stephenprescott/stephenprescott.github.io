@@ -1,0 +1,10 @@
+---
+layout: layouts/index-page.njk
+title: Projects
+description: Selected projects and case studies.
+permalink: /projects/
+---
+{% from "components/section-heading.njk" import sectionHeading -%}
+{% from "components/project-grid.njk" import projectGrid -%}
+{{ sectionHeading("Work", "Projects") }}
+{{ projectGrid(projects) }}

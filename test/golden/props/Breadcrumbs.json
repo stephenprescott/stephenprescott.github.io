@@ -1,0 +1,17 @@
+{
+ "props": {
+  "items": [
+   {
+    "label": "Home",
+    "href": "/"
+   },
+   {
+    "label": "Projects",
+    "href": "/projects/"
+   },
+   {
+    "label": "Project title"
+   }
+  ]
+ }
+}

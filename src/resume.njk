@@ -1,0 +1,39 @@
+---
+layout: layouts/base.njk
+title: Résumé
+description: Résumé of Stephen Groff, Senior BI Developer in Minneapolis–Saint Paul.
+permalink: /resume/
+---
+{% from "components/section-heading.njk" import sectionHeading -%}
+{% from "components/skill-group.njk" import skillGroup -%}
+{% from "components/article-list.njk" import articleList -%}
+{% from "components/button.njk" import button -%}
+{% macro roles(items) -%}
+<ol class="ws-root ws-timeline ws-resume-roles">{% for r in items %}<li><p class="ws-eyebrow">{{ r.period }}</p><h3 class="ws-timeline-title">{{ r.title }}</h3><p class="ws-timeline-org">{{ r.org }}</p><ul class="ws-resume-bullets">{% for b in r.bullets %}<li class="ws-card-body">{{ b }}</li>{% endfor %}</ul></li>{% endfor %}</ol>
+{%- endmacro %}
+<section class="ws-section ws-resume"><div class="ws-container">
+<header class="ws-resume-head">
+{{ sectionHeading("Résumé", resume.contact.name) }}
+<p class="ws-card-body">{{ resume.contact.title }}</p>
+<p class="ws-card-body">{{ resume.contact.location }} · <a class="ws-link" href="tel:{{ resume.contact.phone }}">{{ resume.contact.phone }}</a> · <a class="ws-link" href="mailto:{{ resume.contact.email }}">{{ resume.contact.email }}</a> · <a class="ws-link" href="https://www.{{ resume.contact.linkedin }}">{{ resume.contact.linkedin }}</a></p>
+<p class="ws-resume-download">{{ button("Download PDF", "/resume/stephen-groff-resume.pdf", "primary", "file-pdf") }}</p>
+</header>
+
+<h3 class="ws-eyebrow">Summary</h3>
+<p class="ws-card-body">{{ resume.summary }}</p>
+
+{{ sectionHeading("", "Experience") }}
+{{ roles(resume.experience) }}
+
+{{ sectionHeading("", "Earlier Operations Career") }}
+{{ roles(resume.earlier) }}
+
+{{ sectionHeading("", "Skills") }}
+<div class="ws-resume-skills">{% for g in resume.skills %}{{ skillGroup(g.title, g.skills) }}{% endfor %}</div>
+
+<h3 class="ws-eyebrow">Training</h3>
+<ul class="ws-resume-bullets">{% for t in resume.training %}<li class="ws-card-body">{{ t }}</li>{% endfor %}</ul>
+
+<h3 class="ws-eyebrow">Education</h3>
+{{ articleList(resume.education) }}
+</div></section>

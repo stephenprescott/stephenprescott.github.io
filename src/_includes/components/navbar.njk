@@ -1,0 +1,3 @@
+{% macro navbar(brand, brandHref="/", links=[], action="") -%}
+<nav class="ws-root ws-nav" aria-label="Main"><a class="ws-nav-brand" href="{{ brandHref }}">{{ brand }}</a><ul class="ws-nav-links">{% for l in links %}<li><a class="ws-link" href="{{ l.href }}">{{ l.label }}</a></li>{% endfor %}</ul>{{ action | safe }}</nav>
+{%- endmacro %}

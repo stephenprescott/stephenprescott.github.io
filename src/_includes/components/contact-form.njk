@@ -1,0 +1,9 @@
+{#- accessKey (a public Web3Forms key) makes the form live; without it the form is inert.
+    disabled and email are the site's deliberate additions to the design system's ContactForm:
+    a static site has no form backend yet, so the button is disabled and a mailto link is the fallback. -#}
+{% macro contactForm(action="#", method="post", submitLabel="Send message", disabled=false, email="", accessKey="") -%}
+{% from "components/icon.njk" import icon -%}
+{% from "components/field.njk" import field -%}
+{% set live = accessKey and not disabled -%}
+<form class="ws-root ws-form" action="{% if live %}https://api.web3forms.com/submit{% else %}{{ action }}{% endif %}" method="{% if live %}post{% else %}{{ method }}{% endif %}">{% if live %}<input type="hidden" name="access_key" value="{{ accessKey }}"><input type="hidden" name="subject" value="New message from stephenprescott.github.io"><div hidden aria-hidden="true"><input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></div>{% endif %}{{ field("Name", "name", required=true, autocomplete="name") }}{{ field("Email", "email", type="email", required=true, autocomplete="email") }}{{ field("Message", "message", required=true, multiline=true, rows=5) }}<button type="submit" class="ws-btn ws-btn-primary"{% if disabled %} disabled{% endif %}>{{ icon("paper-plane-tilt", 20) }}{{ submitLabel }}</button>{% if disabled %}<p class="ws-hint">The form is not connected yet.{% if email %} Email <a class="ws-link" href="mailto:{{ email }}">{{ email }}</a> instead.{% endif %}</p>{% endif %}</form>
+{%- endmacro %}

@@ -1,0 +1,4 @@
+{% macro projectCard(title, eyebrow="", summary="", image="", imageAlt="", tags=[], href="", status="", slug="") -%}
+{% from "components/tag.njk" import tag -%}
+<article class="ws-root ws-card ws-project"{% if slug %} data-slug="{{ slug }}"{% endif %}>{% if image %}<img class="ws-project-img" src="{{ image }}" alt="{{ imageAlt }}" loading="lazy">{% endif %}<div class="ws-project-body">{% if eyebrow %}<p class="ws-eyebrow">{{ eyebrow }}</p>{% endif %}{% if status %}<p class="ws-tag-status">{{ tag(status) }}</p>{% endif %}<h3 class="ws-card-title">{% if href %}<a class="ws-project-link" href="{{ href }}">{{ title }}</a>{% else %}{{ title }}{% endif %}</h3>{% if summary %}<p class="ws-card-body">{{ summary }}</p>{% endif %}{% if tags | length %}<div class="ws-tags">{% for t in tags %}<span class="ws-tag">{{ t }}</span>{% endfor %}</div>{% endif %}</div></article>
+{%- endmacro %}

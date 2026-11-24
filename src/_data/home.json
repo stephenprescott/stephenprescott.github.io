@@ -1,0 +1,173 @@
+{
+  "hero": {
+    "eyebrow": "Data & AI strategy · Senior BI Developer · Minneapolis–Saint Paul",
+    "pre": "I turn data into decisions for leadership, with ",
+    "highlight": "AI",
+    "post": " in the data lifecycle.",
+    "body": "10+ years of enterprise reporting in healthcare, manufacturing and supply chain. I help leadership turn data into decisions and bring AI into the data lifecycle: strategy, trusted models, governed reporting and working AI tools.",
+    "ctas": [
+      {
+        "label": "Get in touch",
+        "href": "#contact",
+        "variant": "primary"
+      },
+      {
+        "label": "Ask my AI",
+        "variant": "quiet",
+        "action": "open-chat"
+      }
+    ]
+  },
+  "stats": [],
+  "expertise": {
+    "eyebrow": "Expertise",
+    "title": "Data and AI strategy, end to end",
+    "items": [
+      {
+        "title": "Enterprise data lifecycle",
+        "body": "From source systems to the executive dashboard: I took over and built the SQL Server gold layer for five source systems, including NetSuite, Salesforce, FileMaker and Brightree, and built the pipeline that brings third-party vendor data into the warehouse."
+      },
+      {
+        "title": "Data strategy",
+        "body": "I represent BI in analytics strategy discussions with business and IT leadership, and lead development of 12+ semantic models serving four business units, with KPIs defined alongside data stewards."
+      },
+      {
+        "title": "AI tools and platforms",
+        "body": "Microsoft Copilot agents grounded in team SharePoint content, built on my own initiative and now used by my team and one other business unit, plus working tools I direct Claude Code to build from written specs and tests."
+      },
+      {
+        "title": "Analytics and executive reporting",
+        "body": "Director to C-suite dashboards, including a real-time order operations display, month-end sales forecasts and automated nightly PDF distribution, plus Power BI, Tableau and Sigma self-service analytics."
+      },
+      {
+        "title": "Governance and compliance",
+        "body": "Moving reporting onto semantic models whose definitions and calculations are owned by business unit data stewards, and regulatory compliance reporting built from the ground up for a health plan: Commercial MLR, Medicare Advantage, Part D and Medicaid Managed Care."
+      },
+      {
+        "title": "Data as competitive advantage",
+        "body": "At Tactile Medical I audited 600+ Power BI reports, retired more than 70% and am moving the rest onto single semantic models so leaders work from one trusted set of figures. At Caterpillar I rebuilt 48+ KPIs to corporate standard formulas so plant decisions rested on validated numbers."
+      }
+    ]
+  },
+  "work": {
+    "eyebrow": "Work",
+    "title": "What I've built with AI"
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "Experience and skills",
+    "bio": "Over a decade building enterprise reporting in healthcare, manufacturing and supply chain, after an earlier career in operations and process engineering. At Tactile Medical I audited 600+ Power BI reports, retired more than 70% of them, and planned the move of the rest to Fabric semantic models.",
+    "skills": [
+      {
+        "title": "Applied AI",
+        "skills": [
+          "Microsoft Copilot agents",
+          "Claude Code",
+          "AI-assisted data modeling and scripting",
+          "MCP (coursework)"
+        ]
+      },
+      {
+        "title": "BI and analytics",
+        "skills": [
+          "Power BI",
+          "Tableau",
+          "Sigma",
+          "DAX",
+          "M (Power Query)",
+          "Semantic Modeling",
+          "Self-Service Analytics",
+          "Executive Dashboards",
+          "KPI Standardization"
+        ]
+      },
+      {
+        "title": "Data engineering",
+        "skills": [
+          "SQL Server (SSMS)",
+          "Data Modeling",
+          "Medallion Architecture",
+          "ETL/ELT",
+          "dbt",
+          "Databricks",
+          "Delta Lake",
+          "PySpark",
+          "Spark SQL",
+          "Microsoft Fabric"
+        ]
+      },
+      {
+        "title": "Languages",
+        "skills": [
+          "SQL",
+          "DAX",
+          "M",
+          "VBA",
+          "Python (AI-assisted)"
+        ]
+      },
+      {
+        "title": "Source systems modeled",
+        "skills": [
+          "SAP HANA",
+          "NetSuite",
+          "Salesforce",
+          "FileMaker",
+          "Brightree"
+        ]
+      },
+      {
+        "title": "Domain",
+        "skills": [
+          "Healthcare and Regulatory Reporting",
+          "Manufacturing Quality Analytics",
+          "Supply Chain and Logistics"
+        ]
+      },
+      {
+        "title": "Tools and collaboration",
+        "skills": [
+          "Azure DevOps",
+          "JIRA",
+          "GitHub",
+          "Third-Party Vendor Data Coordination",
+          "Stakeholder Engagement"
+        ]
+      }
+    ],
+    "learning": [
+      {
+        "title": "Introduction to Model Context Protocol, and Model Context Protocol: Advanced Topics (Anthropic)",
+        "meta": "2026"
+      },
+      {
+        "title": "Python for Data Science, AI & Development (IBM)",
+        "meta": "2026"
+      },
+      {
+        "title": "Healthcare AI coursework: AI for Healthcare, NLP Techniques for Clinical Datasets, Machine Learning Fundamentals for Healthcare (LinkedIn Learning)",
+        "meta": "2026"
+      },
+      {
+        "title": "Generative AI and LLM coursework: Working with Large Language Models, GPT Foundations (LinkedIn Learning)",
+        "meta": "2026"
+      },
+      {
+        "title": "Microsoft Power BI Desktop: Advanced DAX for Data Analysis (Maven Analytics)",
+        "meta": "2023"
+      },
+      {
+        "title": "Bachelor of Science, Sociology (Kansas State University)",
+        "meta": "Degree"
+      }
+    ]
+  },
+  "writing": {
+    "eyebrow": "Writing",
+    "title": "Articles and talks"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Let's talk"
+  }
+}

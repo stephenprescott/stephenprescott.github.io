@@ -1,0 +1,7 @@
+node_modules/
+_site/
+.superpowers/
+scripts/vendor/
+worktrees/
+docs/superpowers/
+.wrangler/

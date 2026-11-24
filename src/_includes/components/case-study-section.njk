@@ -1,0 +1,4 @@
+{#- Use with {% call caseStudySection(label=..., title=...) %}content{% endcall %} -#}
+{% macro caseStudySection(label="", title="") -%}
+<section class="ws-root ws-case-section"><div class="ws-case-label">{% if label %}<p class="ws-eyebrow">{{ label }}</p>{% endif %}{% if title %}<h2 class="ws-case-title">{{ title }}</h2>{% endif %}</div><div class="ws-case-content">{{ caller() }}</div></section>
+{%- endmacro %}

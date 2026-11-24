@@ -1,0 +1,32 @@
+{
+ "props": {
+  "projects": [
+   {
+    "title": "One",
+    "eyebrow": "Dashboard",
+    "summary": "One-line summary.",
+    "image": "/img/a.png",
+    "imageAlt": "",
+    "tags": [
+     "BI",
+     "SQL"
+    ],
+    "href": "/projects/a/"
+   },
+   {
+    "title": "Two",
+    "eyebrow": "Dashboard",
+    "summary": "One-line summary.",
+    "image": "/img/a.png",
+    "imageAlt": "",
+    "tags": [
+     "SQL",
+     "Python"
+    ],
+    "href": "/projects/a/"
+   }
+  ],
+  "filter": true,
+  "allLabel": "All"
+ }
+}

@@ -1,0 +1,11 @@
+{
+ "props": {
+  "label": "Problem",
+  "title": "What needed solving"
+ },
+ "children": {
+  "$el": "p",
+  "props": {},
+  "children": "Body paragraph."
+ }
+}

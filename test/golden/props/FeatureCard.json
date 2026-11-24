@@ -1,0 +1,7 @@
+{
+ "props": {
+  "eyebrow": "01",
+  "title": "Feature title"
+ },
+ "children": "Feature body text."
+}

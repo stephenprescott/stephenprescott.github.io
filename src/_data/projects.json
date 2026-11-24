@@ -1,0 +1,175 @@
+[
+  {
+    "slug": "data-central",
+    "title": "Data Central: the journey of one row",
+    "eyebrow": "Personal project · 2026",
+    "summary": "An interactive demo of one synthetic patient record moving through eight stages of the data lifecycle, from generation to a business dashboard, including what happens when a bad batch arrives.",
+    "image": "",
+    "imageAlt": "",
+    "tags": [
+      "Claude",
+      "Data lifecycle",
+      "Data governance",
+      "Three.js"
+    ],
+    "href": "",
+    "caseStudy": {
+      "meta": [
+        {
+          "label": "Role",
+          "value": "Designer and builder"
+        },
+        {
+          "label": "Timeline",
+          "value": "2026"
+        },
+        {
+          "label": "Live demo",
+          "value": "https://groffia.github.io/data-central/journey/"
+        }
+      ],
+      "problem": "A data platform is hard to explain: the dashboard is visible, but the steps behind it, and what protects the numbers when bad data arrives, are not.",
+      "approach": "I built a deterministic simulation of a fictional health system's data, all synthetic, and pages on top of it: a scroll-through 3D journey of a single row, a pipeline view, a value page and a brain page covering governance. A quality gate, a dead-letter queue and de-duplicated alerts show how bad rows are held back while production keeps its last good numbers. I worked with Claude from written specs, test-first plans and independent reviews of each task.",
+      "result": "A public demo anyone can open without installing anything. The pages make no network request at runtime, offline copies are available, and a table maps each component to its Databricks, Snowflake and Microsoft Fabric equivalent.",
+      "figures": [],
+      "stats": []
+    }
+  },
+  {
+    "slug": "kyber-praxis",
+    "title": "Kyber Praxis",
+    "eyebrow": "Personal project · 2026",
+    "summary": "A personal agile board for cards, projects, sprints, check-ins and retrospectives, with backup and restore built in.",
+    "image": "",
+    "imageAlt": "",
+    "tags": [
+      "Claude",
+      "Interactive app",
+      "Agile"
+    ],
+    "href": "",
+    "caseStudy": {
+      "meta": [
+        {
+          "label": "Role",
+          "value": "Designer and builder"
+        },
+        {
+          "label": "Timeline",
+          "value": "2026"
+        }
+      ],
+      "problem": "A personal agile board: one place to plan my own work in sprints, review each sprint and keep a history.",
+      "approach": "I built a single-page board with Claude and published it as a private Claude artifact. Cards, projects, sprints, check-ins and retros live in the artifact's own database. The source file is the master copy, and a download button plus snapshots in a backup folder make the data easy to back up and restore.",
+      "result": "A personal board published as a private Claude artifact. Republishing the one source file updates the live page, and the data can be restored from a backup.",
+      "figures": [],
+      "stats": []
+    }
+  },
+  {
+    "slug": "praxis-fasti",
+    "title": "Praxis Fasti",
+    "eyebrow": "Personal project · 2026",
+    "summary": "A time-block planner with Day, Week, Month and Recap views, plus a Sandbox mode, and a shared demo that opens with sample data.",
+    "image": "",
+    "imageAlt": "",
+    "tags": [
+      "Claude",
+      "Interactive app"
+    ],
+    "href": "",
+    "caseStudy": {
+      "meta": [
+        {
+          "label": "Role",
+          "value": "Designer and builder"
+        },
+        {
+          "label": "Timeline",
+          "value": "2026"
+        },
+        {
+          "label": "Demo",
+          "value": "https://claude.ai/artifact/GAGR9k39PRJhTpa1KSDhQG"
+        }
+      ],
+      "problem": "A planner for time-blocking: plan the day in blocks, then look back at how the time was used.",
+      "approach": "I built a planner with Day, Week, Month and Recap views, working with Claude from one source file. Two artifacts are built from it: one for daily use, and a demo anyone can open. The demo shows sample data read-only, and Sandbox mode lets a visitor try every feature in their own tab. Build and test scripts keep the two versions in step.",
+      "result": "A planner in daily use, plus a public demo that needs no sign-in and holds only sample data.",
+      "figures": [],
+      "stats": []
+    }
+  },
+  {
+    "slug": "jobscan-board",
+    "title": "Jobscan Board",
+    "eyebrow": "Personal project · 2026",
+    "summary": "The tool I built to find and rank job postings for my own job search: it collects postings three times a day, removes duplicates, scores them against written rules and shows the results in a small web app.",
+    "image": "",
+    "imageAlt": "",
+    "tags": [
+      "Claude Code",
+      "Custom skills",
+      "Scheduled tasks",
+      "MCP"
+    ],
+    "href": "",
+    "caseStudy": {
+      "meta": [
+        {
+          "label": "Role",
+          "value": "Designer and builder"
+        },
+        {
+          "label": "Timeline",
+          "value": "2026"
+        },
+        {
+          "label": "Sample-data demo",
+          "value": "https://groffia.github.io/pipeline-demo/"
+        }
+      ],
+      "problem": "Searching for a job means checking many sources, seeing the same postings again and judging each against the same criteria by hand.",
+      "approach": "I built Jobscan with Claude Code. Scheduled skills collect job postings from several sources three times a day, drop anything that fails my written rules, merge duplicates and skip postings I have already seen. Each remaining posting is scored, put in a tier and explained. A small database-backed board shows the ranked list, and I mark each posting as shortlisted, skipped, applying or applied. The rules live in a plain file, so changing a rule never means changing code.",
+      "result": "A ranked list I check instead of the sources themselves. A separate demo replays one sample day with made-up data in a neutral setting, so the method can be seen without any real postings.",
+      "figures": [],
+      "stats": []
+    }
+  },
+  {
+    "slug": "steppenwolf",
+    "title": "Steppenwolf",
+    "eyebrow": "Personal project · 2026",
+    "summary": "A research project that tests whether a systematic model can score altcoins and issue Buy, Neutral, Exit or Short signals, judged on return after trading costs.",
+    "image": "",
+    "imageAlt": "",
+    "tags": [
+      "Python",
+      "Machine learning",
+      "Research"
+    ],
+    "href": "",
+    "status": "In progress",
+    "caseStudy": {
+      "meta": [
+        {
+          "label": "Role",
+          "value": "Designer and builder"
+        },
+        {
+          "label": "Timeline",
+          "value": "2026"
+        },
+        {
+          "label": "Status",
+          "value": "In progress"
+        }
+      ],
+      "problem": "The question: can a systematic model score altcoins and issue signals that still hold up after trading costs?",
+      "approach": "The goal is a system that logs signals and runs a simulated portfolio. It uses free data sources only, stored exactly as received. Each approach is checked by walk-forward testing that keeps delisted coins in, under written protocols with written pass marks, and a final exam period that has not been opened. Every design decision and every failed attempt is recorded.",
+      "result": "Current state: research only, still in progress. It places no orders and is not ready for live use, and nothing here is trading advice.",
+      "figures": [],
+      "stats": []
+    }
+  }
+]

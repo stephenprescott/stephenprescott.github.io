@@ -1,0 +1,37 @@
+{
+  "name": "Stephen Groff",
+  "title": "Senior BI Developer",
+  "description": "Senior BI developer in Minneapolis–Saint Paul building the data and semantic models business units rely on, and bringing AI into the data lifecycle.",
+  "url": "https://stephenprescott.github.io",
+  "email": "groff.stephen@gmail.com",
+  "resume": "/resume/",
+  "nav": [
+    { "label": "Work", "href": "/#work" },
+    { "label": "About", "href": "/#about" },
+    { "label": "Contact", "href": "/#contact" }
+  ],
+  "social": [
+    { "label": "LinkedIn", "href": "https://www.linkedin.com/in/groffstephen", "icon": "linkedin-logo" },
+    { "label": "Email", "href": "mailto:groff.stephen@gmail.com", "icon": "envelope-simple" }
+  ],
+  "footer": {
+    "columns": [
+      {
+        "title": "Site",
+        "links": [
+          { "label": "Work", "href": "/#work" },
+          { "label": "About", "href": "/#about" },
+          { "label": "Contact", "href": "/#contact" }
+        ]
+      },
+      {
+        "title": "Elsewhere",
+        "links": [
+          { "label": "LinkedIn", "href": "https://www.linkedin.com/in/groffstephen" },
+          { "label": "Email", "href": "mailto:groff.stephen@gmail.com" }
+        ]
+      }
+    ],
+    "legal": "© 2026 Stephen Groff."
+  }
+}

@@ -1,0 +1,51 @@
+/* Data Journey-style motion. Animates only transform and opacity. Off under reduced motion.
+   Colors come from tokens.css. Without JavaScript, nothing is hidden. */
+
+/* Hero visual: the data lifecycle as a flow of points ending in AI. */
+.hero-visual { padding: 0 var(--space-md) var(--space-md); color: var(--muted); }
+.hero-visual .ws-container { padding: 0; }
+.hero-visual svg { display: block; width: 100%; height: auto; max-height: 11rem; overflow: visible; }
+.hv-line { stroke: currentColor; stroke-width: 1; opacity: .35; }
+.hv-dot-node { fill: currentColor; opacity: .75; }
+.hv-ring { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: 0; }
+.hv-ai .hv-dot-node { fill: var(--accent); opacity: 1; }
+.hv-ai text { fill: var(--accent); font-weight: 600; }
+.hv-flow { fill: var(--accent); opacity: 0; }
+.hero-visual text { fill: var(--muted); font: 14px var(--font-system); letter-spacing: .02em; }
+@media (max-width: 640px) {
+  .hero-visual { padding: 0 var(--space-sm) var(--space-sm); }
+  .hero-visual text { display: none; }
+}
+
+.hv-ring, .hv-flow { transform-box: fill-box; transform-origin: center; }
+.hv-ring { animation: hv-pulse 2s ease-out infinite; animation-delay: calc(var(--i) * .75s); }
+.hv-flow { animation: hv-travel 6s linear infinite; animation-delay: var(--d); }
+.hero-visual.is-off * { animation-play-state: paused; }
+
+@keyframes hv-pulse {
+  0% { opacity: .9; transform: scale(.6); }
+  70%, 100% { opacity: 0; transform: scale(1.9); }
+}
+@keyframes hv-travel {
+  0% { opacity: 0; transform: translateX(0); }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(848px); }
+}
+
+/* Reveal on scroll: only when scripts run (html.js); motion.js adds .is-in. */
+/* If motion.js has not signalled ready within 3 s, the head script adds .motion-failed and sections show. */
+html.js:not(.motion-failed) [data-reveal]:not(.is-in) {
+  opacity: 0;
+  transform: translateY(24px);
+}
+html.js [data-reveal] { transition: opacity var(--duration-slow) ease-out, transform var(--duration-slow) ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html.js [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .hv-flow { display: none; }
+}
+@media print {
+  html.js [data-reveal] { opacity: 1 !important; transform: none !important; }
+}

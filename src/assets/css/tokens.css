@@ -1,0 +1,73 @@
+/* WARMING STRIPES — 1880→2025 — generated from tokens.json */
+
+:root, [data-theme="dark"] {
+  --primary: #0d1117;
+  --secondary: #d8dee9;
+  --tertiary: #7a8699;
+  --tertiary-text: var(--tertiary);
+  --accent: #ff8a5c;
+  --slate-300: #9aa7bb;
+  --slate-500: #5a6577;
+  --ground: var(--primary);
+  --ink: var(--secondary);
+  --muted: var(--slate-300);
+}
+[data-theme="light"] {
+  --tertiary-text: #586373;
+  --accent: #b53300;
+  --ground: var(--secondary);
+  --ink: var(--primary);
+  --muted: #586373;
+}
+:root {
+  --space-3xs: .25rem;
+  --space-2xs: .5rem;
+  --space-xs: .75rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --radius-round: 50%;
+  --text-eyebrow: 11px;
+  --text-xs: .875rem;
+  --text-sm: .9375rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.75rem;
+  --text-4xl: 2.5rem;
+  --text-5xl: 3rem;
+  --text-hero: clamp(2.5rem, 8vw, 4.5rem);
+  --text-jumbo: clamp(5rem, 18vw, 10rem);
+  --leading-none: 1;
+  --leading-tight: 1.1;
+  --leading-snug: 1.2;
+  --leading-normal: 1.4;
+  --leading-relaxed: 1.5;
+  --leading-loose: 1.6;
+  --tracking-eyebrow: 0.3em;
+  --border-hairline: 1px;
+  --border-strong: 2px;
+  --size-control: 44px;
+  --size-tag: 28px;
+  --size-content: 1200px;
+  --measure: 36em;
+  --measure-wide: 44em;
+  --measure-title: 16em;
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 700ms;
+  --font-serif: Georgia, Gelasio, serif;
+  --font-system: system-ui, sans-serif;
+}
+.display { font-family: var(--font-serif); font-size: 4.5rem; line-height: 1.1; font-weight: 400; }
+.h1 { font-family: var(--font-serif); font-size: 2.5rem; font-weight: 400; }
+.body-md { font-family: var(--font-serif); font-size: 1rem; font-weight: 400; }
+.eyebrow { font-family: var(--font-system); font-size: 11px; font-weight: 400; letter-spacing: 0.3em; }
+@font-face { font-family: "Gelasio"; src: url("fonts/gelasio-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Gelasio"; src: url("fonts/gelasio-latin-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Gelasio"; src: url("fonts/gelasio-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }

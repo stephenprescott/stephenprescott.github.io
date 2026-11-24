@@ -1,0 +1,7 @@
+{
+ "props": {
+  "value": "12",
+  "label": "Metric label",
+  "note": "A note"
+ }
+}

@@ -1,0 +1,3 @@
+{% macro breadcrumbs(items=[]) -%}
+<nav class="ws-crumbs" aria-label="Breadcrumb"><ol>{% for i in items %}<li>{% if i.href %}<a class="ws-link" href="{{ i.href }}">{{ i.label }}</a>{% else %}<span aria-current="page">{{ i.label }}</span>{% endif %}</li>{% endfor %}</ol></nav>
+{%- endmacro %}

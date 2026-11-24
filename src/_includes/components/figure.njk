@@ -1,0 +1,3 @@
+{% macro figure(src, alt="", caption="", frame="") -%}
+<figure class="ws-root ws-figure{% if frame == 'browser' %} ws-figure-browser{% endif %}">{% if frame == 'browser' %}<div class="ws-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>{% endif %}<img src="{{ src }}" alt="{{ alt }}" loading="lazy" class="ws-figure-img">{% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}</figure>
+{%- endmacro %}

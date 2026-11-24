@@ -1,0 +1,38 @@
+[
+  {
+    "period": "04/2023 – 11/2026",
+    "title": "Senior BI Developer, Operational Process Reporting Analytics",
+    "org": "Tactile Medical · Minneapolis, MN",
+    "body": "Led new development for a five-person analytics team: 12+ semantic models across four business units and a gold layer over five source systems. Audited 600+ Power BI reports, built Copilot agents on team SharePoint content, and delivered C-suite reporting."
+  },
+  {
+    "period": "11/2022 – 01/2023",
+    "title": "Data Engineer",
+    "org": "Mynd · Oakland, CA (Remote)",
+    "body": "Built dbt models in Sigma Computing and restructured dbt models from the bronze layer."
+  },
+  {
+    "period": "12/2019 – 01/2023",
+    "title": "Senior Data Consultant",
+    "org": "Bright Health · Minneapolis–Saint Paul, MN (Remote)",
+    "body": "Built regulatory compliance reporting (Commercial MLR, Medicare Advantage, Part D, Medicaid Managed Care) and Databricks / Delta Lake ETL. Maintained models before each reporting cycle and tuned Databricks cluster performance."
+  },
+  {
+    "period": "01/2018 – 12/2019",
+    "title": "Quality Analytics Consultant",
+    "org": "Caterpillar Inc. (contract, via The Vision Companies) · Minneapolis–Saint Paul, MN",
+    "body": "Quality Control analytics that grew into other departments. Rebuilt 48+ KPIs, secured SAP HANA access, and replaced Excel reporting with Tableau and Power BI."
+  },
+  {
+    "period": "06/2016 – 12/2017",
+    "title": "Logistics & Analytics Contractor",
+    "org": "Delta Air Lines (contract) · Minneapolis–Saint Paul, MN",
+    "body": "Designed the floor of a 40,000 sq ft parts warehouse, set up kanban replenishment for a 3,200-SKU supermarket, and built a VBA dangerous-goods tracker and automated management reports."
+  },
+  {
+    "period": "08/2011 – 10/2015",
+    "title": "Operations and process engineering roles",
+    "org": "Kalmar Solutions, Smart Warehousing, Valley Forge Fabrics, Caterpillar Inc.",
+    "body": "Materials and logistics supervisor (31 direct reports), warehouse and inventory manager, ocean freight logistics manager, and process engineer."
+  }
+]

@@ -1,0 +1,4 @@
+{% macro projectNav(prev=null, next=null) -%}
+{% from "components/icon.njk" import icon -%}
+<nav class="ws-root ws-pnav" aria-label="More projects">{% if prev %}<a class="ws-pnav-link" href="{{ prev.href }}"><span class="ws-eyebrow">Previous project</span><span class="ws-pnav-title">{{ icon("arrow-left", 20) }}{{ prev.title }}</span></a>{% endif %}{% if next %}<a class="ws-pnav-link ws-pnav-next" href="{{ next.href }}"><span class="ws-eyebrow">Next project</span><span class="ws-pnav-title">{{ next.title }}{{ icon("arrow-right", 20) }}</span></a>{% endif %}</nav>
+{%- endmacro %}

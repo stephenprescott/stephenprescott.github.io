@@ -1,0 +1,14 @@
+{
+ "props": {
+  "title": "Project title",
+  "eyebrow": "Dashboard",
+  "summary": "One-line summary.",
+  "image": "/img/a.png",
+  "imageAlt": "",
+  "tags": [
+   "BI",
+   "SQL"
+  ],
+  "href": "/projects/a/"
+ }
+}

@@ -1,0 +1,4 @@
+{% macro button(label, href, variant="primary", iconName="") -%}
+{% from "components/icon.njk" import icon -%}
+<a class="ws-btn ws-btn-{{ variant }}" href="{{ href }}">{% if iconName %}{{ icon(iconName, 20) }}{% endif %}{{ label }}</a>
+{%- endmacro %}

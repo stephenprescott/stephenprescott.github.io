@@ -1,0 +1,7 @@
+{
+ "props": {
+  "action": "#",
+  "method": "post",
+  "submitLabel": "Send message"
+ }
+}

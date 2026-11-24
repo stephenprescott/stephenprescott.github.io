@@ -1,0 +1,14 @@
+{% from "components/breadcrumbs.njk" import breadcrumbs -%}
+{% from "components/case-study-header.njk" import caseStudyHeader -%}
+{% from "components/case-study-section.njk" import caseStudySection -%}
+{% from "components/figure.njk" import figure -%}
+{% from "components/stat.njk" import stat -%}
+{% from "components/project-nav.njk" import projectNav -%}
+<div class="ws-container" style="padding:var(--space-sm) var(--space-md) 0">{{ breadcrumbs([{ label: "Home", href: "/" }, { label: "Projects", href: "/projects/" }, { label: cs.title }]) }}</div>
+<div class="ws-container">
+{{ caseStudyHeader(eyebrow="Case study", title=cs.title, summary=cs.summary, meta=cs.caseStudy.meta, image=cs.image, imageAlt=cs.imageAlt) }}
+{% call caseStudySection(label="Problem", title="What needed solving") %}<p>{{ cs.caseStudy.problem }}</p>{% endcall %}
+{% call caseStudySection(label="Approach", title="What I did") %}<p>{{ cs.caseStudy.approach }}</p>{% for f in cs.caseStudy.figures %}{{ figure(f.src, f.alt, f.caption, f.frame) }}{% endfor %}{% endcall %}
+{% call caseStudySection(label="Result", title="What changed") %}<p>{{ cs.caseStudy.result }}</p>{% if cs.caseStudy.stats | length %}<div class="ws-row">{% for s in cs.caseStudy.stats %}{{ stat(s.value, s.label, s.note) }}{% endfor %}</div>{% endif %}{% endcall %}
+{{ projectNav(prev=cs.prev, next=cs.next) }}
+</div>

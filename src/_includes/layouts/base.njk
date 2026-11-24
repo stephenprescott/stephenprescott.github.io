@@ -1,0 +1,66 @@
+{% from "components/skip-link.njk" import skipLink -%}
+{% from "components/navbar.njk" import navbar -%}
+{% from "components/theme-toggle.njk" import themeToggle -%}
+{% from "components/footer.njk" import footer -%}
+{% from "components/button.njk" import button -%}
+{% from "components/chat.njk" import chatPanel -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% set pageTitle = cs.title if cs else title -%}
+{% set pageDesc = (cs.summary if cs else description) or site.description -%}
+<title>{% if pageTitle and pageTitle != site.name %}{{ pageTitle }} — {% endif %}{{ site.name }}{% if not pageTitle or pageTitle == site.name %} — {{ site.title }}{% endif %}</title>
+<meta name="description" content="{{ pageDesc }}">
+<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0d1117">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ pageTitle or site.name }}">
+<meta property="og:description" content="{{ pageDesc }}">
+<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+<meta name="twitter:card" content="summary">
+
+{% if page.url == "/" %}{% set linkedin %}{% for s in site.social %}{% if s.label == "LinkedIn" %}{{ s.href }}{% endif %}{% endfor %}{% endset -%}
+<script type="application/ld+json">{{ { "@context": "https://schema.org", "@type": "Person", "name": site.name, "jobTitle": site.title, "url": site.url, "email": site.email, "sameAs": [linkedin | trim] } | jsonLd | safe }}</script>
+{% endif %}
+<script>
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('ws-theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') {
+      t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.dataset.theme = t;
+    document.documentElement.classList.add('js');
+    setTimeout(function () { if (!window.wsMotionReady) document.documentElement.classList.add('motion-failed'); }, 3000);
+  })();
+</script>
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/bundle.css">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/assets/css/motion.css">
+{% if chatEndpoint %}<link rel="stylesheet" href="/assets/css/chat.css">
+{% endif %}<link rel="stylesheet" href="/assets/css/print.css" media="print">
+</head>
+<body class="ws-root">
+{{ skipLink() }}
+{% if site.resume %}{% set navAction %}<div class="ws-nav-actions">{{ button("Résumé", site.resume, "quiet", "file-pdf") }}{{ themeToggle() }}</div>{% endset %}{% else %}{% set navAction %}{{ themeToggle() }}{% endset %}{% endif -%}
+{{ navbar(brand=site.name, brandHref="/", links=site.nav, action=navAction) }}
+<main id="main">
+{{ content | safe }}
+</main>
+{{ footer(brand=site.name, columns=site.footer.columns, legal=site.footer.legal) }}
+{% if chatEndpoint %}{{ chatPanel(chatEndpoint, chat.starters, site.url) }}
+<script src="/assets/js/chat.js" defer></script>
+{% endif %}
+<script src="/assets/js/theme.js" defer></script>
+<script src="/assets/js/motion.js" defer></script>
+</body>
+</html>

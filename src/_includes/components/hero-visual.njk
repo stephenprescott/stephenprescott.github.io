@@ -1,0 +1,9 @@
+{#- Decorative data-lifecycle flow: eight stages, then AI. Pure CSS animation (see motion.css). -#}
+{% macro heroVisual() -%}
+{% set stages = ["Generation", "Collection", "Processing", "Storage", "Management", "Analysis", "Visualization", "Interpretation", "AI"] -%}
+<div class="hero-visual"><div class="ws-container"><svg viewBox="0 0 960 150" focusable="false" aria-hidden="true">
+<line class="hv-line" x1="56" y1="50" x2="904" y2="50"/>
+{% for s in stages %}{% set x = 56 + loop.index0 * 106 %}<g class="hv-node{% if loop.last %} hv-ai{% endif %}" style="--i:{{ loop.index0 }}"><circle class="hv-ring" cx="{{ x }}" cy="50" r="{% if loop.last %}20{% else %}12{% endif %}"/><circle class="hv-dot-node" cx="{{ x }}" cy="50" r="{% if loop.last %}12{% else %}6{% endif %}"/><text x="{{ x }}" y="{% if loop.last %}98{% else %}86{% endif %}" text-anchor="middle">{{ s }}</text></g>
+{% endfor %}{% for n in range(0, 3) %}<circle class="hv-flow" style="--d:{{ n * 2 }}s" cx="56" cy="50" r="3"/>
+{% endfor %}</svg></div></div>
+{%- endmacro %}

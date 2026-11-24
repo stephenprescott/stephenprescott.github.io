@@ -1,0 +1,7 @@
+@media print {
+  .ws-nav, .ws-footer, .ws-skip, .ws-nav-actions, .ws-icon-btn, [data-chat], .ws-resume-download { display: none !important; }
+  html, body, .ws-root { background: #fff !important; color: #000 !important; }
+  a { color: inherit; text-decoration: none; }
+  .ws-section { padding-block: 0 !important; }
+  .ws-timeline li, .ws-skill-group { break-inside: avoid; }
+}

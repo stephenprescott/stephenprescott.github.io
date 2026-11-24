@@ -1,0 +1,17 @@
+{
+ "props": {
+  "items": [
+   {
+    "period": "2020 – Present",
+    "title": "Job title",
+    "org": "Company",
+    "body": "What I did."
+   },
+   {
+    "period": "2016 – 2020",
+    "title": "Earlier title",
+    "org": "Earlier company"
+   }
+  ]
+ }
+}

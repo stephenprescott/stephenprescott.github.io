@@ -1,0 +1,42 @@
+/* Site-specific styles. Design-system files (tokens.css, bundle.css) are never edited. */
+
+/* The theme toggle needs JavaScript; hide it when scripts are off. */
+html:not(.js) .ws-nav button.ws-icon-btn { display: none; }
+
+/* Component display rules (flex) would otherwise override the hidden attribute. */
+[hidden] { display: none !important; }
+
+body { margin: 0; }
+main { display: block; }
+
+/* Long unbroken words (URLs, emails, labels) wrap instead of widening the page. */
+.ws-root { overflow-wrap: anywhere; }
+
+/* Text links reach the 44px touch target (tokens: --size-control). */
+.ws-nav .ws-link,
+.ws-nav-brand,
+.ws-footer .ws-link,
+.ws-crumbs .ws-link,
+.ws-hint .ws-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--size-control);
+}
+
+.ws-nav-actions { display: flex; gap: var(--space-2xs); }
+
+.ws-tag-status { margin: 0 0 var(--space-2xs); }
+.ws-tag-status .ws-tag { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+/* Resume page */
+.ws-resume-head{display:flex;flex-direction:column;gap:var(--space-sm)}
+.ws-resume-roles{margin-bottom:var(--space-lg)}
+.ws-resume-bullets{margin:var(--space-xs) 0 var(--space-md);padding-left:1.25em;display:flex;flex-direction:column;gap:var(--space-xs)}
+.ws-resume-skills{display:flex;flex-direction:column;gap:var(--space-md);margin-bottom:var(--space-lg)}
+
+/* Optional role picker (hidden until roles.js runs). */
+.ws-role-picker { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); max-width: var(--container-max, 72rem); margin: var(--space-md) auto 0; padding: 0 var(--space-md); border: 0; }
+.ws-role-legend { float: left; margin-right: var(--space-sm); padding: 0; color: var(--text-muted, inherit); font-weight: 600; }
+.ws-role-option { display: inline-flex; align-items: center; gap: var(--space-xs); min-height: 44px; padding: 0 var(--space-sm); border: 1px solid var(--border, currentColor); border-radius: 999px; cursor: pointer; }
+.ws-role-option input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }
+.ws-role-option input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

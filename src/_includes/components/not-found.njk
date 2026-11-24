@@ -1,0 +1,4 @@
+{% macro notFound(homeHref="/", title="This page doesn’t exist.", body="It may have moved, or the address may be mistyped.") -%}
+{% from "components/icon.njk" import icon -%}
+<section class="ws-root ws-404"><p class="ws-404-code" aria-hidden="true">404</p><h1 class="ws-section-title">{{ title }}</h1><p class="ws-card-body">{{ body }}</p><a class="ws-btn ws-btn-primary" href="{{ homeHref }}">{{ icon("house", 20) }}Back to home</a></section>
+{%- endmacro %}

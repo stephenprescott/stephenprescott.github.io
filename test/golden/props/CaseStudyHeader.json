@@ -1,0 +1,19 @@
+{
+ "props": {
+  "eyebrow": "Case study",
+  "title": "Project title",
+  "summary": "Project summary.",
+  "meta": [
+   {
+    "label": "Role",
+    "value": "Lead"
+   },
+   {
+    "label": "Timeline",
+    "value": "3 months"
+   }
+  ],
+  "image": "/img/a.png",
+  "imageAlt": ""
+ }
+}

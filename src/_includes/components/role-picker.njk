@@ -1,0 +1,8 @@
+{#- Optional "I'm a..." control. Ships `hidden`; assets/js/roles.js reveals it. Never required. -#}
+{% macro rolePicker(roles=[], defaultStarters=[]) -%}
+<fieldset class="ws-role-picker" data-role-picker data-roles="{{ roles | dump }}" data-default-starters="{{ defaultStarters | dump }}" hidden>
+<legend class="ws-role-legend">I'm a…</legend>
+{% for r in roles %}<label class="ws-role-option"><input type="radio" name="ws-role" value="{{ r.id }}"><span>{{ r.label }}</span></label>{% endfor %}
+<button type="button" class="ws-btn ws-btn-quiet ws-role-reset" data-role-reset hidden>Show default</button>
+</fieldset>
+{%- endmacro %}

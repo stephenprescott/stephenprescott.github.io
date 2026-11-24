@@ -1,0 +1,12 @@
+{
+ "props": {
+  "prev": {
+   "title": "Previous project",
+   "href": "/projects/p/"
+  },
+  "next": {
+   "title": "Next project",
+   "href": "/projects/n/"
+  }
+ }
+}

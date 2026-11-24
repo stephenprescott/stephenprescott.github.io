@@ -1,0 +1,21 @@
+name = "stephen-ask"
+main = "src/worker.mjs"
+compatibility_date = "2026-11-01"
+
+[ai]
+binding = "AI"
+
+# Keep Worker logs (for example "workers-ai failed") so they can be read after the fact.
+[observability]
+enabled = true
+
+[[kv_namespaces]]
+binding = "LIMITS"
+id = "1f351d39cf1044e0a9138d2517726f82"
+
+[vars]
+ALLOWED_ORIGINS = "https://stephenprescott.github.io,http://localhost:8080"
+KNOWLEDGE_URL = "https://stephenprescott.github.io/chat/knowledge.json"
+WORKERS_AI_MODEL = "@cf/google/gemma-4-26b-a4b-it"
+
+# Secret (never in this file): ANTHROPIC_API_KEY, set with: npx wrangler secret put ANTHROPIC_API_KEY

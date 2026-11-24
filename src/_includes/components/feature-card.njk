@@ -1,0 +1,3 @@
+{% macro featureCard(eyebrow="", title="", body="") -%}
+<article class="ws-root ws-card">{% if eyebrow %}<p class="ws-eyebrow">{{ eyebrow }}</p>{% endif %}<h3 class="ws-card-title">{{ title }}</h3>{% if body %}<p class="ws-card-body">{{ body }}</p>{% endif %}</article>
+{%- endmacro %}

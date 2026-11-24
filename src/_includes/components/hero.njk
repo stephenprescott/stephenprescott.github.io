@@ -1,0 +1,4 @@
+{#- title and actions are HTML built by the caller from escaped parts. -#}
+{% macro hero(eyebrow="", title="", body="", actions="") -%}
+<header class="ws-root ws-hero">{% if eyebrow %}<p class="ws-eyebrow">{{ eyebrow }}</p>{% endif %}<h1 class="ws-hero-title">{{ title | safe }}</h1>{% if body %}<p class="ws-hero-body">{{ body }}</p>{% endif %}{% if actions %}<div class="ws-hero-actions">{{ actions | safe }}</div>{% endif %}</header>
+{%- endmacro %}
