@@ -372,6 +372,14 @@ test('resizing 1440 → 1180px (reduced motion): the lines still reach their sta
     await page.evaluate(() => window.LandingChart.select('ai-tools-and-platforms'));
     await page.setViewportSize({ width: 1180, height: 900 });
     await page.waitForFunction(() => document.querySelector('.lp-starchart').getBoundingClientRect().width > 1000);
+    // the hero re-lays out on a debounce after a resize and moves the chart down the page: wait until the chart's
+    // box and dash have stopped changing, or the sampled points and the screenshot disagree (seen on slow CI runners)
+    await page.evaluate(async () => {
+      const c = document.querySelector('svg.lp-chart');
+      const snap = () => { const r = c.getBoundingClientRect(); return [Math.round(r.top + scrollY), Math.round(r.width), c.style.getPropertyValue('--lp-dash'), document.documentElement.scrollHeight].join(); };
+      let last = snap(), still = 0;
+      while (still < 5) { await new Promise((r) => setTimeout(r, 100)); const now = snap(); still = now === last ? still + 1 : 0; last = now; }
+    });
     const { gaps } = await lineGaps(page);
     assert.deepEqual(gaps, []);
   });
