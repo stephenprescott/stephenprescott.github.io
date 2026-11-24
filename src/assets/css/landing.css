@@ -89,6 +89,10 @@ html.lp-scene-on .lp-hero{margin-top:-60px;padding-top:0}
    html.lp-chat-yield. It fades, then turns visibility:hidden, so it is out of the tab order and cannot be clicked; under
    reduced motion chat.css drops the fade. */
 html.lp-scene-on .ws-chat .ws-chat-launcher{transition:opacity .25s,visibility 0s,background-color .25s,color .25s}
+/* until the scene's first yield check has run (hero-scene.js removes html.lp-chat-wait, set by the inline script in
+   landing.njk, which also removes it if the scene script errors or never starts) the launcher stays invisible, so it
+   cannot flash on load where it will yield */
+html.lp-chat-wait .ws-chat .ws-chat-launcher{opacity:0;visibility:hidden;transition:none}
 html.lp-chat-yield .ws-chat .ws-chat-launcher{opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
 
 /* constellations: drawn in, line by line, when they come into view */

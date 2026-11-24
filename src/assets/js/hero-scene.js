@@ -1405,7 +1405,7 @@
     if (yieldMO) yieldMO.disconnect();
     if (yieldRaf) cancelAnimationFrame(yieldRaf);
     yieldRaf = 0;
-    root.classList.remove('lp-scene-on', 'lp-chat-yield');
+    root.classList.remove('lp-scene-on', 'lp-chat-yield', 'lp-chat-wait');
     hero.classList.remove('lp-arc', 'lp-compact');
     scene.textContent = ''; scene.removeAttribute('style'); scene.classList.remove('drawn');
     [bgCv, moreNote].forEach(function (n) { if (n && n.parentNode) n.parentNode.removeChild(n); });
@@ -1458,6 +1458,7 @@
       }
     }
     root.classList.toggle('lp-chat-yield', hit);
+    root.classList.remove('lp-chat-wait'); // the first check has run: the launcher may now show (landing.njk sets the class)
   }
   function queueYield() { if (!yieldRaf && !dead && launcher) yieldRaf = requestAnimationFrame(checkYield); }
 
@@ -1544,7 +1545,7 @@
   };
 
   /* ============ start after the page has loaded and painted, never blocking the text ============ */
-  if (!hero || !scene || !dataEl || !zt || !reduceMQ) return;
+  if (!hero || !scene || !dataEl || !zt || !reduceMQ) { root.classList.remove('lp-chat-wait'); return; }
   function boot() {
     requestAnimationFrame(function () {
       setTimeout(function () {

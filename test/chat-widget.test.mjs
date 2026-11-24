@@ -541,6 +541,68 @@ test('reduced motion: the launcher yields without a fade', async () => {
   await ctx.close();
 });
 
+// No flash: on / the launcher stays invisible from first paint until the scene's first yield check has run.
+// A rAF loop (installed before any page script) records every frame in which the launcher is actually visible.
+const watchLauncher = (page) => page.addInitScript(() => {
+  const w = (window.__lw = { shownFrames: 0, firstShownAt: -1, waitClassSeen: false });
+  const tick = () => {
+    const l = document.querySelector('[data-chat-launcher]');
+    if (l && !l.hidden) {
+      const cs = getComputedStyle(l);
+      if (cs.display !== 'none' && cs.visibility === 'visible' && Number(cs.opacity) > 0) {
+        w.shownFrames++;
+        if (w.firstShownAt < 0) w.firstShownAt = performance.now();
+        w.sceneReadyWhenShown = document.documentElement.classList.contains('lp-scene-on') && !document.documentElement.classList.contains('lp-chat-wait');
+      }
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+});
+
+test('1280×740: the launcher yields on load and is never visible on the way (no flash)', async () => {
+  const { ctx, page } = await open({ viewport: { width: 1280, height: 740 } });
+  await watchLauncher(page);
+  await page.goto(live.url + '/');
+  await page.waitForFunction(() => document.documentElement.classList.contains('lp-scene-on'), null, { timeout: 30000 });
+  await page.waitForFunction(() => !document.documentElement.classList.contains('lp-chat-wait'), null, { timeout: 30000 });
+  await settle(page);
+  assert.equal(await launcherShown(page), false);
+  assert.equal(await page.evaluate(() => window.__lw.shownFrames), 0);
+  await ctx.close();
+});
+
+test('1440×900: the launcher appears only after the scene is ready', async () => {
+  const { ctx, page } = await open();
+  await watchLauncher(page);
+  await page.goto(live.url + '/');
+  await page.waitForFunction(() => document.documentElement.classList.contains('lp-scene-on'), null, { timeout: 30000 });
+  await page.waitForFunction(() => window.__lw.shownFrames > 0, null, { timeout: 10000 });
+  assert.equal(await page.evaluate(() => window.__lw.sceneReadyWhenShown), true);
+  assert.equal(await page.locator('[data-chat-launcher]').isVisible(), true);
+  await ctx.close();
+});
+
+test('the scene script blocked: the launcher still ends up visible', async () => {
+  const { ctx, page } = await open();
+  await page.route('**/hero-scene.js', (route) => route.abort());
+  await page.goto(live.url + '/');
+  await page.waitForFunction(() => !document.querySelector('[data-chat-launcher]').hidden && getComputedStyle(document.querySelector('[data-chat-launcher]')).visibility === 'visible' && Number(getComputedStyle(document.querySelector('[data-chat-launcher]')).opacity) > 0, null, { timeout: 10000 });
+  assert.equal(await page.locator('[data-chat-launcher]').isVisible(), true);
+  assert.equal(await page.evaluate(() => document.documentElement.classList.contains('lp-chat-wait')), false);
+  await ctx.close();
+});
+
+test('the scene script failing to run: the launcher is not left hidden', async () => {
+  const { ctx, page } = await open();
+  await page.route('**/hero-scene.js', (route) => route.fulfill({ contentType: 'text/javascript', body: 'throw new Error("scene down");' }));
+  page.on('pageerror', () => {});
+  await page.goto(live.url + '/');
+  await page.waitForFunction(() => !document.documentElement.classList.contains('lp-chat-wait'), null, { timeout: 15000 });
+  assert.equal(await page.locator('[data-chat-launcher]').isVisible(), true);
+  await ctx.close();
+});
+
 // /resume/ keeps its own chat panel: values captured before the shell restyle (Task 7).
 for (const [theme, bg] of [['light', 'rgb(216, 222, 233)'], ['dark', 'rgb(13, 17, 23)']]) {
   test(`/resume/ chat panel unchanged in ${theme} theme`, async () => {
