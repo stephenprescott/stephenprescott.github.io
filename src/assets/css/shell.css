@@ -1,0 +1,76 @@
+/* The dark shell. Space Grotesk only. Tokens live on .sh-root; all rules are scoped to the shell. */
+@font-face{font-family:"Space Grotesk";src:url("fonts/space-grotesk-latin-300-normal.woff2") format("woff2");font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:"Space Grotesk";src:url("fonts/space-grotesk-latin-400-normal.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Space Grotesk";src:url("fonts/space-grotesk-latin-500-normal.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"Space Grotesk";src:url("fonts/space-grotesk-latin-600-normal.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:"Space Grotesk";src:url("fonts/space-grotesk-latin-700-normal.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+
+.sh-root{
+  --ground:#0d1117; --deep:#080b10;
+  --ink:#d8dee9; --muted:#9aa7bb; --tert:#7a8699; --slate:#5a6577;
+  --accent:#ff8a5c; --cyan:#4fd8eb;
+  --rule:rgba(35,44,58,.95);
+  --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --gutter:72px;
+}
+.sh *,.sh *::before,.sh *::after{box-sizing:border-box}
+html.sh{scroll-behavior:smooth;scroll-padding-top:80px;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html.sh{scroll-behavior:auto}}
+.sh-root{margin:0;background:var(--ground);color:var(--ink);font:400 17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.sh-root::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(110% 70% at 50% 0%,#121925 0%,#0d1117 48%,#080b10 100%)}
+.sh-root a{color:inherit}
+.sh-root button{font-family:inherit}
+.sh-root [hidden]{display:none!important}
+.sh-root ::selection{background:rgba(255,138,92,.35);color:#fff}
+.sh-root :focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
+.sh-skip{position:absolute;left:16px;top:-60px;z-index:100;background:var(--accent);color:#0d1117;padding:12px 16px;font:500 14px var(--sans);text-decoration:none;border-radius:999px}
+.sh-skip:focus{top:12px}
+
+/* layout */
+.sh-container{width:min(1200px,calc(100% - 2 * var(--gutter)));margin-inline:auto}
+
+/* type */
+.sh-eyebrow{margin:0;font:500 12px/1.75 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+
+/* pill button */
+.sh-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:0 22px;border:0;border-radius:999px;background:rgba(216,222,233,.07);color:var(--ink);font:500 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background-color .25s,color .25s}
+.sh-btn:hover{background:rgba(255,138,92,.14);color:var(--accent)}
+.sh-btn.primary{background:var(--accent);color:#0d1117}
+.sh-btn.primary:hover{background:#ffa27e;color:#0d1117}
+
+/* nav */
+.sh-nav{position:sticky;top:0;z-index:40;height:60px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 28px;border-bottom:1px solid transparent;transition:background-color .35s,border-color .35s}
+.sh-nav.solid{background:rgba(10,13,19,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom-color:rgba(35,44,58,.9)}
+.sh-brand{display:inline-flex;align-items:center;min-height:44px;font:600 16px var(--sans);letter-spacing:-.01em;text-decoration:none;white-space:nowrap}
+.sh-nav-r{display:flex;align-items:center;gap:20px}
+.sh-links{display:flex;align-items:center;gap:4px;margin:0;padding:0;list-style:none}
+.sh-links a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;font:500 12px var(--sans);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--muted);transition:color .25s}
+.sh-links a:hover{color:var(--ink)}
+.sh-res{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:rgba(216,222,233,.07);color:var(--ink);font:500 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;transition:background-color .25s,color .25s}
+.sh-res:hover{background:rgba(255,138,92,.14);color:var(--accent)}
+.sh-menu-btn{display:none;align-items:center;justify-content:center;width:44px;height:44px;border:0;border-radius:50%;background:rgba(216,222,233,.06);color:var(--ink);cursor:pointer}
+
+/* footer */
+.sh-foot{margin-top:128px;padding:28px 0 96px;border-top:1px solid var(--rule)}
+.sh-foot-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;font-size:16px;color:var(--muted)}
+.sh-foot-links{display:flex;gap:8px}
+.sh-foot-links a{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;text-decoration:none;color:var(--ink);transition:color .25s}
+.sh-foot-links a:hover{color:var(--accent)}
+
+@media (max-width:1199px){.sh-root{--gutter:48px}}
+@media (max-width:760px){
+  .sh-root{--gutter:16px}
+  .sh-nav{padding:0 16px}
+  .sh-nav-r{gap:8px}
+  /* the collapsed menu needs script; without it the links stay in the bar */
+  .js .sh-links{display:none;position:absolute;top:60px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;padding:8px 16px 16px;background:rgba(10,13,19,.97);border-bottom:1px solid var(--rule)}
+  .js .sh-links.open{display:flex}
+  .js .sh-links a{min-height:52px;border-bottom:1px solid rgba(35,44,58,.8)}
+  .js .sh-menu-btn{display:inline-flex}
+  .sh-links a{padding:0 8px;letter-spacing:.1em}
+  .sh-res{padding:0 14px;letter-spacing:.08em}
+  .sh-eyebrow{letter-spacing:.12em}
+  .sh-foot{margin-top:88px}
+  .sh-foot-in{justify-content:center;text-align:center}
+}

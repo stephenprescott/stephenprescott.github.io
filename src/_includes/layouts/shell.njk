@@ -1,0 +1,58 @@
+{% from "components/shell-nav.njk" import shellNav -%}
+{% from "components/shell-footer.njk" import shellFooter -%}
+{% from "components/chat.njk" import chatPanel -%}
+<!doctype html>
+<html lang="en" class="sh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% set pageTitle = cs.title if cs else title -%}
+{% set pageDesc = (cs.summary if cs else description) or site.description -%}
+<title>{% if pageTitle and pageTitle != site.name %}{{ pageTitle }} — {% endif %}{{ site.name }}{% if not pageTitle or pageTitle == site.name %} — {{ site.title }}{% endif %}</title>
+<meta name="description" content="{{ pageDesc }}">
+<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0d1117">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ pageTitle or site.name }}">
+<meta property="og:description" content="{{ pageDesc }}">
+<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+<meta name="twitter:card" content="summary">
+
+{% if page.url == "/" %}{% set linkedin %}{% for s in site.social %}{% if s.label == "LinkedIn" %}{{ s.href }}{% endif %}{% endfor %}{% endset -%}
+<script type="application/ld+json">{{ { "@context": "https://schema.org", "@type": "Person", "name": site.name, "jobTitle": site.title, "url": site.url, "email": site.email, "sameAs": [linkedin | trim] } | jsonLd | safe }}</script>
+{% endif %}
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="/assets/css/shell.css">
+{% if chatEndpoint %}<link rel="stylesheet" href="/assets/css/chat.css">
+{% endif %}</head>
+<body class="sh-root">
+<a class="sh-skip" href="#main">Skip to content</a>
+{{ shellNav(site) }}
+<main id="main">
+{{ content | safe }}
+</main>
+{{ shellFooter(site) }}
+{% if chatEndpoint %}{{ chatPanel(chatEndpoint, chat.starters, site.url) }}
+<script src="/assets/js/chat.js" defer></script>
+{% endif %}
+<script>
+(function () {
+  var nav = document.querySelector('[data-sh-nav]'), btn = nav.querySelector('.sh-menu-btn'), links = nav.querySelector('.sh-links');
+  function solid() { nav.classList.toggle('solid', window.scrollY > 24); }
+  addEventListener('scroll', solid, { passive: true }); solid();
+  btn.hidden = false;
+  function set(open) { links.classList.toggle('open', open); btn.setAttribute('aria-expanded', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); }
+  btn.addEventListener('click', function () { set(btn.getAttribute('aria-expanded') !== 'true'); });
+  links.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+})();
+</script>
+{% for s in scripts %}<script src="{{ s }}" defer></script>
+{% endfor %}</body>
+</html>

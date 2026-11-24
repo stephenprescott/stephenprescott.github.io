@@ -1,0 +1,3 @@
+{% macro shellFooter(site) -%}
+<footer class="sh-foot"><div class="sh-container sh-foot-in"><span>{{ site.footer.legal }}</span><span class="sh-foot-links">{% for s in site.social %}<a href="{{ s.href }}">{{ s.label }}</a>{% endfor %}</span></div></footer>
+{%- endmacro %}
